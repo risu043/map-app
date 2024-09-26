@@ -33,6 +33,9 @@ export default function RootLayout({
           <Link href="/" className="block">
             <h1 className="text-6xl">React map app</h1>
           </Link>
+          <Link href="/lists" className="block">
+            <h2 className="text-xl">lists</h2>
+          </Link>
           <Link href="/form" className="block">
             <h2 className="text-xl">form</h2>
           </Link>

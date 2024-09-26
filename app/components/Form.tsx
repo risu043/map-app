@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { addMarker } from '../marker';
 
 export default function Form() {
   const [address, setAddress] = useState('');
@@ -30,6 +31,25 @@ export default function Form() {
         setMarkerPosition(null);
       }
     });
+  };
+
+  const handleRegister = async () => {
+    if (markerPosition && address) {
+      try {
+        const newMarker = await addMarker({
+          lat: markerPosition.lat,
+          lng: markerPosition.lng,
+          title: address,
+        });
+        if (newMarker) {
+          alert('施設が正常に登録されました。');
+          // You might want to update your markers list or perform any other actions here
+        }
+      } catch (error) {
+        console.error('施設の登録中にエラーが発生しました:', error);
+        alert('施設の登録中にエラーが発生しました。');
+      }
+    }
   };
 
   if (!apiKey) {
@@ -66,7 +86,10 @@ export default function Form() {
               {markerPosition && <AdvancedMarker position={markerPosition} />}
             </Map>
           </div>
-          <button className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8">
+          <button
+            onClick={handleRegister}
+            className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8"
+          >
             この施設を登録する
           </button>
         </div>

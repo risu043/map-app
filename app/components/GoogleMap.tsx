@@ -1,9 +1,45 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { fetchMarkers } from '../marker';
+
+type FormattedMarker = {
+  id: number;
+  position: { lat: number; lng: number };
+  title: string;
+};
 
 const GoogleMap = () => {
+  const [markers, setMarkers] = useState<FormattedMarker[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAndSetMarkers = async () => {
+      try {
+        const fetchedMarkers = await fetchMarkers();
+        if (Array.isArray(fetchedMarkers)) {
+          const formattedMarkers = fetchedMarkers.map((marker) => ({
+            id: marker.id,
+            position: { lat: marker.lat, lng: marker.lng },
+            title: marker.title,
+          }));
+          setMarkers(formattedMarkers);
+        } else {
+          console.error('Fetched markers is not an array:', fetchedMarkers);
+          setMarkers([]);
+        }
+      } catch (error) {
+        console.error('Error fetching markers:', error);
+        setMarkers([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAndSetMarkers();
+  }, []);
+
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
   const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAP_ID;
 
@@ -13,10 +49,21 @@ const GoogleMap = () => {
 
   const center = { lat: 35.658581, lng: 139.745433 };
 
-  const markers = [
-    { position: { lat: 35.658581, lng: 139.745433 }, title: '東京タワー' },
-    { position: { lat: 35.710015, lng: 139.810759 }, title: 'スカイツリー' },
-  ];
+  if (isLoading || markers.length === 0) {
+    return (
+      <div
+        style={{
+          width: '800px',
+          height: '700px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        Loading map...
+      </div>
+    );
+  }
 
   return (
     <APIProvider apiKey={apiKey}>
@@ -28,9 +75,9 @@ const GoogleMap = () => {
         disableDefaultUI={true}
         mapId={mapId}
       >
-        {markers.map((marker, index) => (
+        {markers.map((marker) => (
           <AdvancedMarker
-            key={index}
+            key={marker.id}
             position={marker.position}
             title={marker.title}
           />
