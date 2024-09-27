@@ -1,8 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { APIProvider } from '@vis.gl/react-google-maps';
 import { addMarker } from '../marker';
+import { useRouter } from 'next/navigation';
+import GoogleMapSingle from './GoogleMapSingle';
+
+type SingleMarker = {
+  title: string;
+  position: { lat: number; lng: number };
+} | null;
 
 export default function Form() {
   const [address, setAddress] = useState('');
@@ -10,8 +17,9 @@ export default function Form() {
   const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
   const [markerPosition, setMarkerPosition] =
     useState<google.maps.LatLngLiteral | null>(null);
+  const [marker, setMarker] = useState<SingleMarker>(null);
+  const router = useRouter();
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
-  const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAP_ID;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,6 +33,10 @@ export default function Form() {
         setCenter(latLng);
         setMarkerPosition(latLng);
         setResult(`緯度: ${location.lat()}, 経度: ${location.lng()}`);
+        setMarker({
+          title: address,
+          position: { lat: location.lat(), lng: location.lng() },
+        });
       } else {
         setResult('施設が見つかりませんでした。');
         setCenter(null);
@@ -43,7 +55,7 @@ export default function Form() {
         });
         if (newMarker) {
           alert('施設が正常に登録されました。');
-          // You might want to update your markers list or perform any other actions here
+          router.push('/lists');
         }
       } catch (error) {
         console.error('施設の登録中にエラーが発生しました:', error);
@@ -57,7 +69,7 @@ export default function Form() {
   }
 
   return (
-    <APIProvider apiKey={apiKey}>
+    <>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -73,27 +85,21 @@ export default function Form() {
         />
       </form>
       {result && <div className="mt-4">{result}</div>}
-      {/* Google Map with marker */}
-      {center && (
-        <div>
-          <div className="mt-4">
-            <Map
-              center={center}
-              mapId={mapId}
-              zoom={13}
-              style={{ width: '400px', height: '300px' }}
+      <APIProvider apiKey={apiKey}>
+        {center && (
+          <div>
+            <div className="mt-4">
+              <GoogleMapSingle marker={marker} />
+            </div>
+            <button
+              onClick={handleRegister}
+              className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8"
             >
-              {markerPosition && <AdvancedMarker position={markerPosition} />}
-            </Map>
+              この施設を登録する
+            </button>
           </div>
-          <button
-            onClick={handleRegister}
-            className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8"
-          >
-            この施設を登録する
-          </button>
-        </div>
-      )}
-    </APIProvider>
+        )}
+      </APIProvider>
+    </>
   );
 }

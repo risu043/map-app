@@ -13,7 +13,6 @@ export const fetchMarkers = async () => {
 export const fetchMarker = async (id: Marker['id']) => {
   try {
     const res = await fetch(`/api/markers/${id}`);
-    // const res = await fetch(`http://localhost:3000/api/markers/${id}`);
     const data: Marker = await res.json();
     return data;
   } catch (error) {
@@ -45,7 +44,7 @@ export const addMarker = async ({
 
 export const editMarker = async ({ id, lat, lng, title }: Marker) => {
   try {
-    const res = await fetch(`/api/tasks/${id}`, {
+    const res = await fetch(`/api/markers/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ lat, lng, title }),
@@ -61,7 +60,7 @@ export const editMarker = async ({ id, lat, lng, title }: Marker) => {
 
 export const deleteMarker = async (id: Marker['id']) => {
   try {
-    const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/markers/${id}`, { method: 'DELETE' });
     if (res.ok) {
       return;
     }
