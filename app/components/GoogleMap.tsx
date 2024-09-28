@@ -1,44 +1,25 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { fetchMarkers } from '../marker';
-
-type FormattedMarker = {
-  id: number;
-  position: { lat: number; lng: number };
-  title: string;
-};
+import { FormattedMarker } from '../types';
 
 const GoogleMap = () => {
-  const [markers, setMarkers] = useState<FormattedMarker[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchAndSetMarkers = async () => {
-      try {
-        const fetchedMarkers = await fetchMarkers();
-        if (Array.isArray(fetchedMarkers)) {
-          const formattedMarkers = fetchedMarkers.map((marker) => ({
-            id: marker.id,
-            position: { lat: marker.lat, lng: marker.lng },
-            title: marker.title,
-          }));
-          setMarkers(formattedMarkers);
-        } else {
-          console.error('Fetched markers is not an array:', fetchedMarkers);
-          setMarkers([]);
-        }
-      } catch (error) {
-        console.error('Error fetching markers:', error);
-        setMarkers([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAndSetMarkers();
-  }, []);
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const {
+    data: markers,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<FormattedMarker[], Error>({
+    queryKey: ['fetchMarkers'],
+    queryFn: fetchMarkers,
+    initialData: queryClient.getQueryData(['fetchMarkers']),
+  });
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
   const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAP_ID;
@@ -47,9 +28,9 @@ const GoogleMap = () => {
     return <div>Google Maps API key is not set</div>;
   }
 
-  const center = { lat: 35.658581, lng: 139.745433 };
+  const center = { lat: 35.681236, lng: 139.767124 };
 
-  if (isLoading || markers.length === 0) {
+  if (isLoading) {
     return (
       <div
         style={{
@@ -64,6 +45,22 @@ const GoogleMap = () => {
       </div>
     );
   }
+
+  if (isError) {
+    return (
+      <div>
+        Error: {error instanceof Error ? error.message : 'An error occurred'}
+      </div>
+    );
+  }
+
+  if (!markers || markers.length === 0) {
+    return <div>No markers found</div>;
+  }
+
+  const handleMarkerClick = (id: number) => {
+    router.push(`/lists/${id}`);
+  };
 
   return (
     <APIProvider apiKey={apiKey}>
@@ -80,6 +77,7 @@ const GoogleMap = () => {
             key={marker.id}
             position={marker.position}
             title={marker.title}
+            onClick={() => handleMarkerClick(marker.id)}
           />
         ))}
       </Map>

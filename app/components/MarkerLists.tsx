@@ -1,32 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  useQuery,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchMarkers } from '../marker';
-
-const client = new QueryClient();
+import { FormattedMarker } from '../types';
 
 export default function MarkerLists() {
-  return (
-    <QueryClientProvider client={client}>
-      <MarkerListsPanel />
-    </QueryClientProvider>
-  );
-}
+  const queryClient = useQueryClient();
 
-function MarkerListsPanel() {
   const {
     data: markers,
     isLoading,
     isError,
     error,
-  } = useQuery({
-    queryKey: ['markers'],
+  } = useQuery<FormattedMarker[], Error>({
+    queryKey: ['fetchMarkers'],
     queryFn: fetchMarkers,
+    initialData: queryClient.getQueryData(['fetchMarkers']),
   });
 
   if (isLoading) {

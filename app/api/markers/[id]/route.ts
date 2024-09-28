@@ -28,10 +28,10 @@ type MarkerUpdate = Omit<
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: number } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const id = params.id;
+    const id = parseInt(params.id, 10);
     const data: MarkerUpdate = await req.json();
 
     const updatedMarker = await prisma.marker.update({

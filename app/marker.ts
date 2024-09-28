@@ -1,20 +1,35 @@
 import { Marker } from '@prisma/client';
+import { FormattedMarker } from './types';
 
 export const fetchMarkers = async () => {
   try {
-    const res = await fetch('/api/markers');
+    const res = await fetch('http://localhost:3000/api/markers');
+    if (!res.ok) {
+      throw new Error(`Failed to fetch markers: ${res.status}`);
+    }
     const data: Marker[] = await res.json();
-    return data;
+    const formattedMarkers: FormattedMarker[] = data.map((marker) => ({
+      id: marker.id,
+      position: { lat: marker.lat, lng: marker.lng },
+      title: marker.title,
+    }));
+    return formattedMarkers;
   } catch (error) {
-    console.error('マーカーの取得に失敗しました:', error);
+    console.error('Error in fetchMarkers:', error);
+    throw error;
   }
 };
 
 export const fetchMarker = async (id: Marker['id']) => {
   try {
     const res = await fetch(`/api/markers/${id}`);
-    const data: Marker = await res.json();
-    return data;
+    const marker: Marker = await res.json();
+    const formattedMarker: FormattedMarker = {
+      id: marker.id,
+      position: { lat: marker.lat, lng: marker.lng },
+      title: marker.title,
+    };
+    return formattedMarker;
   } catch (error) {
     console.error('マーカーの取得に失敗しました:', error);
   }
@@ -49,12 +64,13 @@ export const editMarker = async ({ id, lat, lng, title }: Marker) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ lat, lng, title }),
     });
-    if (res.ok) {
-      const newMarker: Marker = await res.json();
-      return newMarker;
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
     }
+    const newMarker: Marker = await res.json();
+    return newMarker;
   } catch (error) {
-    console.error('マーカーの切り替えに失敗しました:', error);
+    console.error('マーカーの編集に失敗しました:', error);
   }
 };
 

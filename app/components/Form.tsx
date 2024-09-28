@@ -70,6 +70,7 @@ export default function Form() {
 
   return (
     <>
+      <div>登録フォーム</div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"

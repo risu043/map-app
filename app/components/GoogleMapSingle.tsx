@@ -24,7 +24,7 @@ function GoogleMapSingle({ marker }: { marker: SingleMarker }) {
     <APIProvider apiKey={apiKey}>
       <Map
         style={{ width: '400px', height: '300px' }}
-        defaultCenter={marker.position}
+        center={marker.position}
         defaultZoom={13}
         gestureHandling={'greedy'}
         disableDefaultUI={true}
