@@ -18,6 +18,9 @@ export default function Form() {
   const [markerPosition, setMarkerPosition] =
     useState<google.maps.LatLngLiteral | null>(null);
   const [marker, setMarker] = useState<SingleMarker>(null);
+  const [message, setMessage] = useState('');
+  const [category, setCategory] = useState('');
+  const [image, setImage] = useState('');
   const router = useRouter();
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
 
@@ -32,7 +35,7 @@ export default function Form() {
         const latLng = { lat: location.lat(), lng: location.lng() };
         setCenter(latLng);
         setMarkerPosition(latLng);
-        setResult(`緯度: ${location.lat()}, 経度: ${location.lng()}`);
+        setResult('');
         setMarker({
           title: address,
           position: { lat: location.lat(), lng: location.lng() },
@@ -52,6 +55,9 @@ export default function Form() {
           lat: markerPosition.lat,
           lng: markerPosition.lng,
           title: address,
+          message: message,
+          category: category,
+          image: image,
         });
         if (newMarker) {
           alert('施設が正常に登録されました。');
@@ -70,8 +76,8 @@ export default function Form() {
 
   return (
     <>
-      <div>登録フォーム</div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="mb-4">登録フォーム</div>
+      <form onSubmit={handleSubmit} className="mb-4">
         <input
           type="text"
           value={address}
@@ -85,19 +91,48 @@ export default function Form() {
           className="bg-gray-200 p-4 cursor-pointer"
         />
       </form>
-      {result && <div className="mt-4">{result}</div>}
+      {result && <div className="mb-4">{result}</div>}
       <APIProvider apiKey={apiKey}>
         {center && (
           <div>
-            <div className="mt-4">
+            <div className="mb-4">
               <GoogleMapSingle marker={marker} />
             </div>
-            <button
-              onClick={handleRegister}
-              className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8"
-            >
-              この施設を登録する
-            </button>
+            <form onSubmit={handleRegister}>
+              <div className="mb-4">
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="メッセージ"
+                  className="border p-4"
+                />
+              </div>
+              <div className="mb-4">
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="border p-4"
+                >
+                  <option value="">Select a category</option>
+                  <option value="electronics">公園</option>
+                  <option value="clothing">こども向け</option>
+                  <option value="books">飲食店</option>
+                </select>
+              </div>
+              <div className="mb-4">
+                <input
+                  type="text"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  placeholder="image"
+                  className="border p-4"
+                />
+              </div>
+              <button className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8">
+                この施設を登録する
+              </button>
+            </form>
           </div>
         )}
       </APIProvider>

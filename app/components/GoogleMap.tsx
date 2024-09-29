@@ -5,7 +5,7 @@ import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { fetchMarkers } from '../marker';
-import { FormattedMarker } from '../types';
+import { Marker } from '@prisma/client';
 
 const GoogleMap = () => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const GoogleMap = () => {
     isLoading,
     isError,
     error,
-  } = useQuery<FormattedMarker[], Error>({
+  } = useQuery<Marker[], Error>({
     queryKey: ['fetchMarkers'],
     queryFn: fetchMarkers,
     initialData: queryClient.getQueryData(['fetchMarkers']),
@@ -54,7 +54,7 @@ const GoogleMap = () => {
     );
   }
 
-  if (!markers || markers.length === 0) {
+  if (!markers) {
     return <div>No markers found</div>;
   }
 
@@ -75,7 +75,7 @@ const GoogleMap = () => {
         {markers.map((marker) => (
           <AdvancedMarker
             key={marker.id}
-            position={marker.position}
+            position={{ lat: marker.lat, lng: marker.lng }}
             title={marker.title}
             onClick={() => handleMarkerClick(marker.id)}
           />

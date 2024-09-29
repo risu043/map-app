@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchMarkers } from '../marker';
-import { FormattedMarker } from '../types';
+import { Marker } from '@prisma/client';
 
 export default function MarkerLists() {
   const queryClient = useQueryClient();
@@ -13,7 +13,7 @@ export default function MarkerLists() {
     isLoading,
     isError,
     error,
-  } = useQuery<FormattedMarker[], Error>({
+  } = useQuery<Marker[], Error>({
     queryKey: ['fetchMarkers'],
     queryFn: fetchMarkers,
     initialData: queryClient.getQueryData(['fetchMarkers']),
@@ -41,7 +41,8 @@ export default function MarkerLists() {
         <li key={marker.id}>
           <Link href={`/lists/${marker.id}`}>
             <div className="p-8 mb-8 rounded-xl shadow-md md:w-80">
-              {marker.title}
+              <p>{marker.title}</p>
+              <p>{marker.message}</p>
             </div>
           </Link>
         </li>

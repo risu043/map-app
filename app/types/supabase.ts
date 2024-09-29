@@ -44,21 +44,30 @@ export type Database = {
       }
       markers: {
         Row: {
+          category: string
           id: number
+          image: string
           lat: number
           lng: number
+          message: string
           title: string
         }
         Insert: {
+          category?: string
           id?: number
+          image?: string
           lat: number
           lng: number
+          message?: string
           title: string
         }
         Update: {
+          category?: string
           id?: number
+          image?: string
           lat?: number
           lng?: number
+          message?: string
           title?: string
         }
         Relationships: []

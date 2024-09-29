@@ -19,6 +19,9 @@ model Marker {
   lat     Float
   lng      Float
   title      String
+  category String   @default("uncategorized")
+  image    String   @default("")
+  message  String   @default("") 
 
   @@map("markers")
 }

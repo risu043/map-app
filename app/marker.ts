@@ -8,12 +8,7 @@ export const fetchMarkers = async () => {
       throw new Error(`Failed to fetch markers: ${res.status}`);
     }
     const data: Marker[] = await res.json();
-    const formattedMarkers: FormattedMarker[] = data.map((marker) => ({
-      id: marker.id,
-      position: { lat: marker.lat, lng: marker.lng },
-      title: marker.title,
-    }));
-    return formattedMarkers;
+    return data;
   } catch (error) {
     console.error('Error in fetchMarkers:', error);
     throw error;
@@ -28,6 +23,9 @@ export const fetchMarker = async (id: Marker['id']) => {
       id: marker.id,
       position: { lat: marker.lat, lng: marker.lng },
       title: marker.title,
+      category: marker.category,
+      image: marker.image,
+      message: marker.message,
     };
     return formattedMarker;
   } catch (error) {
@@ -39,12 +37,15 @@ export const addMarker = async ({
   lat,
   lng,
   title,
+  category,
+  message,
+  image,
 }: Omit<Marker, 'id'>): Promise<Marker> => {
   try {
     const res = await fetch('/api/markers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lat, lng, title }),
+      body: JSON.stringify({ lat, lng, title, category, message, image }),
     });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
@@ -57,12 +58,20 @@ export const addMarker = async ({
   }
 };
 
-export const editMarker = async ({ id, lat, lng, title }: Marker) => {
+export const editMarker = async ({
+  id,
+  lat,
+  lng,
+  title,
+  category,
+  message,
+  image,
+}: Marker) => {
   try {
     const res = await fetch(`/api/markers/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lat, lng, title }),
+      body: JSON.stringify({ lat, lng, title, category, message, image }),
     });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
