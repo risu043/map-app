@@ -1,5 +1,6 @@
 import prisma from '../../lib/db';
 import { type NextRequest, NextResponse } from 'next/server';
+import { Database } from '../../types/supabase';
 
 export async function GET() {
   try {
@@ -16,13 +17,10 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const data: Database['public']['Tables']['markers']['Insert'] =
+      await req.json();
     const newMarker = await prisma.marker.create({
-      data: {
-        title: body.title,
-        lat: body.lat,
-        lng: body.lng,
-      },
+      data,
     });
     return NextResponse.json(newMarker, { status: 201 });
   } catch (error) {

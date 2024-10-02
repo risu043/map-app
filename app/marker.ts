@@ -87,7 +87,7 @@ export const deleteMarker = async (id: Marker['id']) => {
   try {
     const res = await fetch(`/api/markers/${id}`, { method: 'DELETE' });
     if (res.ok) {
-      return;
+      return res.json();
     }
   } catch (error) {
     console.error('マーカーの削除に失敗しました:', error);

@@ -11,6 +11,7 @@ export default async function StaticPage() {
   await queryClient.prefetchQuery({
     queryKey: ['fetchMarkers'],
     queryFn: fetchMarkers,
+    staleTime: 0,
   });
   const dehydratedState = dehydrate(queryClient);
   return (

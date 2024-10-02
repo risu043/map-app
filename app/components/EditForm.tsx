@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import GoogleMapSingle from './GoogleMapSingle';
 import { fetchMarker } from '../marker';
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
+import supabase from '../lib/supabase';
 
 type SingleMarker = {
   title: string;
@@ -22,6 +24,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
   const [image, setImage] = useState('');
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
   const [targetMarker, setTargetMarker] = useState<SingleMarker>(null);
+  const [previewImage, setPreviewImage] = useState('');
 
   const { data: marker, isLoading } = useQuery({
     queryKey: ['marker', markerId],
@@ -32,7 +35,9 @@ export default function EditForm({ markerId }: { markerId: number }) {
       setAddress(marker.title);
       setMessage(marker.message);
       setCategory(marker.category);
-      setImage(marker.image);
+      const newImage = marker.image || '/images/noimage.jpg';
+      setPreviewImage(newImage);
+      setImage(newImage);
       setTargetMarker({
         title: marker.title,
         position: marker.position,
@@ -59,6 +64,31 @@ export default function EditForm({ markerId }: { markerId: number }) {
     });
   };
 
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!event.target.files || event.target.files.length == 0) {
+      // 画像が選択されていないのでreturn
+      return;
+    }
+
+    const file = event.target.files[0];
+    const previewImageUrl = URL.createObjectURL(file);
+    setPreviewImage(previewImageUrl);
+    const filePath = `public/${file.name}`; // 画像の保存先のpathを指定
+    const { error } = await supabase.storage
+      .from('my-bucket')
+      .upload(filePath, file);
+    if (error) {
+      console.error('Error uploading file:', error);
+    }
+
+    // 画像のURLを取得
+    const { data } = supabase.storage.from('my-bucket').getPublicUrl(filePath);
+    // 画像のURLをDBに保存
+    setImage(data.publicUrl);
+  };
+
   const queryClient = useQueryClient();
   const router = useRouter();
   const editMarkerMutation = useMutation({
@@ -78,7 +108,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['marker'],
+        queryKey: ['marker', 'fetchMarkers'],
       });
       alert('施設施設を編集しました');
       router.push('/lists');
@@ -115,48 +145,54 @@ export default function EditForm({ markerId }: { markerId: number }) {
         />
       </form>
       {result && <div className="mb-4">{result}</div>}
-      <APIProvider apiKey={apiKey}>
-        <div>
-          <div className="mb-4">
+
+      <div>
+        <div className="mb-4">
+          <APIProvider apiKey={apiKey}>
             <GoogleMapSingle marker={targetMarker} />
-          </div>
-          <form onSubmit={() => editMarkerMutation.mutate()}>
-            <div className="mb-4">
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="メッセージ"
-                className="border p-4"
-              />
-            </div>
-            <div className="mb-4">
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="border p-4"
-              >
-                <option value="">Select a category</option>
-                <option value="electronics">公園</option>
-                <option value="clothing">こども向け</option>
-                <option value="books">飲食店</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-                placeholder="image"
-                className="border p-4"
-              />
-            </div>
-            <button className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8">
-              編集内容を登録する
-            </button>
-          </form>
+          </APIProvider>
         </div>
-      </APIProvider>
+        <form
+          encType="multipart/form-data"
+          onSubmit={() => editMarkerMutation.mutate()}
+        >
+          <div className="mb-4">
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="メッセージ"
+              className="border p-4"
+            />
+          </div>
+          <div className="mb-4">
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="border p-4"
+            >
+              <option value="">Select a category</option>
+              <option value="sample1">sample1</option>
+              <option value="sample2">sample1</option>
+              <option value="sample3">sample1</option>
+            </select>
+          </div>
+          <div className="mb-4">
+            <div className="mb-4 w-80 border">
+              <Image
+                src={previewImage}
+                alt="Preview"
+                width={200}
+                height={150}
+              />
+            </div>
+            <input type="file" onChange={handleImageChange} />
+          </div>
+          <button className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8">
+            編集内容を登録する
+          </button>
+        </form>
+      </div>
     </>
   );
 }

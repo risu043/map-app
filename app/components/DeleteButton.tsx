@@ -11,7 +11,7 @@ export default function DeleteButton({ id }: { id: number }) {
     mutationFn: () => deleteMarker(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['marker'],
+        queryKey: ['fetchMarkers'],
       });
       alert('施設をリストから削除しました');
       router.push('/lists');

@@ -19,6 +19,7 @@ const GoogleMap = () => {
     queryKey: ['fetchMarkers'],
     queryFn: fetchMarkers,
     initialData: queryClient.getQueryData(['fetchMarkers']),
+    staleTime: 1 * 60 * 1000,
   });
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
@@ -78,7 +79,15 @@ const GoogleMap = () => {
             position={{ lat: marker.lat, lng: marker.lng }}
             title={marker.title}
             onClick={() => handleMarkerClick(marker.id)}
-          />
+          >
+            <div className="bg-white border-4 border-indigo-700 w-20 h-20 rounded-full overflow-hidden relative">
+              <img
+                src={marker.image}
+                alt={marker.title}
+                className="w-full h-full object-cover absolute top-0 left-0"
+              />
+            </div>
+          </AdvancedMarker>
         ))}
       </Map>
     </APIProvider>

@@ -17,7 +17,11 @@ function GoogleMapSingle({ marker }: { marker: SingleMarker }) {
   }
 
   if (!marker) {
-    return <div>No marker data available</div>;
+    return (
+      <div className="w-[400px] h-[300px] border grid items-center">
+        <p className="text-center">No marker data available</p>
+      </div>
+    );
   }
 
   return (

@@ -21,18 +21,14 @@ export async function GET(
   }
 }
 
-type MarkerUpdate = Omit<
-  Database['public']['Tables']['markers']['Update'],
-  'id'
->;
-
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const id = parseInt(params.id, 10);
-    const data: MarkerUpdate = await req.json();
+    const data: Database['public']['Tables']['markers']['Update'] =
+      await req.json();
 
     const updatedMarker = await prisma.marker.update({
       where: { id },

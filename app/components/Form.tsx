@@ -14,13 +14,12 @@ type SingleMarker = {
 export default function Form() {
   const [address, setAddress] = useState('');
   const [result, setResult] = useState('');
-  const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
+  // const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
   const [markerPosition, setMarkerPosition] =
     useState<google.maps.LatLngLiteral | null>(null);
   const [marker, setMarker] = useState<SingleMarker>(null);
   const [message, setMessage] = useState('');
   const [category, setCategory] = useState('');
-  const [image, setImage] = useState('');
   const router = useRouter();
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
 
@@ -33,7 +32,7 @@ export default function Form() {
       if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
         const location = results[0].geometry.location;
         const latLng = { lat: location.lat(), lng: location.lng() };
-        setCenter(latLng);
+        // setCenter(latLng);
         setMarkerPosition(latLng);
         setResult('');
         setMarker({
@@ -42,13 +41,14 @@ export default function Form() {
         });
       } else {
         setResult('施設が見つかりませんでした。');
-        setCenter(null);
+        // setCenter(null);
         setMarkerPosition(null);
       }
     });
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (markerPosition && address) {
       try {
         const newMarker = await addMarker({
@@ -57,7 +57,7 @@ export default function Form() {
           title: address,
           message: message,
           category: category,
-          image: image,
+          image: '/images/noimage.jpg',
         });
         if (newMarker) {
           alert('施設が正常に登録されました。');
@@ -92,50 +92,41 @@ export default function Form() {
         />
       </form>
       {result && <div className="mb-4">{result}</div>}
-      <APIProvider apiKey={apiKey}>
-        {center && (
-          <div>
-            <div className="mb-4">
-              <GoogleMapSingle marker={marker} />
-            </div>
-            <form onSubmit={handleRegister}>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="メッセージ"
-                  className="border p-4"
-                />
-              </div>
-              <div className="mb-4">
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="border p-4"
-                >
-                  <option value="">Select a category</option>
-                  <option value="electronics">公園</option>
-                  <option value="clothing">こども向け</option>
-                  <option value="books">飲食店</option>
-                </select>
-              </div>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  placeholder="image"
-                  className="border p-4"
-                />
-              </div>
-              <button className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8">
-                この施設を登録する
-              </button>
-            </form>
+
+      {/* {center && ( */}
+      <div>
+        <div className="mb-4">
+          <APIProvider apiKey={apiKey}>
+            <GoogleMapSingle marker={marker} />
+          </APIProvider>
+        </div>
+        <form onSubmit={handleRegister}>
+          <div className="mb-4">
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="メッセージ"
+              className="border p-4"
+            />
           </div>
-        )}
-      </APIProvider>
+          <div className="mb-4">
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="border p-4"
+            >
+              <option value="">Select a category</option>
+              <option value="sample1">sample1</option>
+              <option value="sample2">sample2</option>
+              <option value="sample3">sample3</option>
+            </select>
+          </div>
+          <button className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8">
+            この施設を登録する
+          </button>
+        </form>
+      </div>
     </>
   );
 }

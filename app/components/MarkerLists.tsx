@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchMarkers } from '../marker';
 import { Marker } from '@prisma/client';
@@ -17,6 +18,7 @@ export default function MarkerLists() {
     queryKey: ['fetchMarkers'],
     queryFn: fetchMarkers,
     initialData: queryClient.getQueryData(['fetchMarkers']),
+    staleTime: 0,
   });
 
   if (isLoading) {
@@ -36,13 +38,26 @@ export default function MarkerLists() {
   }
 
   return (
-    <ul>
+    <ul className=" md:grid grid-cols-[350px_350px] gap-8">
       {markers.map((marker) => (
         <li key={marker.id}>
           <Link href={`/lists/${marker.id}`}>
-            <div className="p-8 mb-8 rounded-xl shadow-md md:w-80">
-              <p>{marker.title}</p>
-              <p>{marker.message}</p>
+            <div className="mb-8 rounded-xl shadow-md">
+              <div className="h-[250px] relative">
+                <Image
+                  src={
+                    marker.image === 'noimage'
+                      ? '/images/noimage.jpg'
+                      : marker.image
+                  }
+                  alt="image"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  fill
+                  priority
+                  className="rounded-t-xl object-cover"
+                />
+              </div>
+              <p className="p-4">{marker.title}</p>
             </div>
           </Link>
         </li>
