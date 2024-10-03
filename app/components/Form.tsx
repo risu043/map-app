@@ -1,27 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import { APIProvider } from '@vis.gl/react-google-maps';
 import { addMarker } from '../marker';
 import { useRouter } from 'next/navigation';
 import GoogleMapSingle from './GoogleMapSingle';
-
-type SingleMarker = {
-  title: string;
-  position: { lat: number; lng: number };
-} | null;
+import { SingleMarker } from '../types';
 
 export default function Form() {
   const [address, setAddress] = useState('');
   const [result, setResult] = useState('');
-  // const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
   const [markerPosition, setMarkerPosition] =
     useState<google.maps.LatLngLiteral | null>(null);
   const [marker, setMarker] = useState<SingleMarker>(null);
   const [message, setMessage] = useState('');
   const [category, setCategory] = useState('');
   const router = useRouter();
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +25,6 @@ export default function Form() {
       if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
         const location = results[0].geometry.location;
         const latLng = { lat: location.lat(), lng: location.lng() };
-        // setCenter(latLng);
         setMarkerPosition(latLng);
         setResult('');
         setMarker({
@@ -41,7 +33,6 @@ export default function Form() {
         });
       } else {
         setResult('施設が見つかりませんでした。');
-        // setCenter(null);
         setMarkerPosition(null);
       }
     });
@@ -70,10 +61,6 @@ export default function Form() {
     }
   };
 
-  if (!apiKey) {
-    return <div>Google Maps API key is not set</div>;
-  }
-
   return (
     <>
       <div className="mb-4">登録フォーム</div>
@@ -92,13 +79,9 @@ export default function Form() {
         />
       </form>
       {result && <div className="mb-4">{result}</div>}
-
-      {/* {center && ( */}
       <div>
         <div className="mb-4">
-          <APIProvider apiKey={apiKey}>
-            <GoogleMapSingle marker={marker} />
-          </APIProvider>
+          <GoogleMapSingle marker={marker} />
         </div>
         <form onSubmit={handleRegister}>
           <div className="mb-4">

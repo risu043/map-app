@@ -29,7 +29,7 @@ const GoogleMap = () => {
     return <div>Google Maps API key is not set</div>;
   }
 
-  const center = { lat: 35.681236, lng: 139.767124 };
+  const center = { lat: 26.4975957, lng: 127.8529654 };
 
   if (isLoading) {
     return (
@@ -68,7 +68,7 @@ const GoogleMap = () => {
       <Map
         style={{ width: '800px', height: '700px' }}
         defaultCenter={center}
-        defaultZoom={13}
+        defaultZoom={10}
         gestureHandling={'greedy'}
         disableDefaultUI={true}
         mapId={mapId}

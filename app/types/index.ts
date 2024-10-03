@@ -1,8 +1,4 @@
-export type FormattedMarker = {
-  id: number;
-  position: { lat: number; lng: number };
+export type SingleMarker = {
   title: string;
-  category: string;
-  image: string;
-  message: string;
-};
+  position: { lat: number; lng: number };
+} | null;

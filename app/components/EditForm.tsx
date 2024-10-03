@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { APIProvider } from '@vis.gl/react-google-maps';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { editMarker } from '../marker';
 import { useRouter } from 'next/navigation';
@@ -10,11 +9,7 @@ import { fetchMarker } from '../marker';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import supabase from '../lib/supabase';
-
-type SingleMarker = {
-  title: string;
-  position: { lat: number; lng: number };
-} | null;
+import { SingleMarker } from '../types';
 
 export default function EditForm({ markerId }: { markerId: number }) {
   const [address, setAddress] = useState('');
@@ -22,7 +17,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
   const [message, setMessage] = useState('');
   const [category, setCategory] = useState('');
   const [image, setImage] = useState('');
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
+  const [isUploading, setIsUploading] = useState(false);
   const [targetMarker, setTargetMarker] = useState<SingleMarker>(null);
   const [previewImage, setPreviewImage] = useState('');
 
@@ -35,7 +30,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
       setAddress(marker.title);
       setMessage(marker.message);
       setCategory(marker.category);
-      const newImage = marker.image || '/images/noimage.jpg';
+      const newImage = marker.image;
       setPreviewImage(newImage);
       setImage(newImage);
       setTargetMarker({
@@ -71,7 +66,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
       // 画像が選択されていないのでreturn
       return;
     }
-
+    setIsUploading(true);
     const file = event.target.files[0];
     const previewImageUrl = URL.createObjectURL(file);
     setPreviewImage(previewImageUrl);
@@ -87,6 +82,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
     const { data } = supabase.storage.from('my-bucket').getPublicUrl(filePath);
     // 画像のURLをDBに保存
     setImage(data.publicUrl);
+    setIsUploading(false);
   };
 
   const queryClient = useQueryClient();
@@ -114,10 +110,6 @@ export default function EditForm({ markerId }: { markerId: number }) {
       router.push('/lists');
     },
   });
-
-  if (!apiKey) {
-    return <div>Google Maps API key is not set</div>;
-  }
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -148,9 +140,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
 
       <div>
         <div className="mb-4">
-          <APIProvider apiKey={apiKey}>
-            <GoogleMapSingle marker={targetMarker} />
-          </APIProvider>
+          <GoogleMapSingle marker={targetMarker} />
         </div>
         <form
           encType="multipart/form-data"
@@ -178,17 +168,32 @@ export default function EditForm({ markerId }: { markerId: number }) {
             </select>
           </div>
           <div className="mb-4">
-            <div className="mb-4 w-80 border">
-              <Image
-                src={previewImage}
-                alt="Preview"
-                width={200}
-                height={150}
-              />
-            </div>
+            {isUploading ? (
+              <div className="relative mb-4 w-80 border">
+                <Image
+                  src={previewImage}
+                  alt="Preview"
+                  width={200}
+                  height={150}
+                  className="relative z-10"
+                />
+                <div className="absolute inset-0 bg-black opacity-50 z-20 flex justify-center items-center">
+                  <div className="loader" />
+                </div>
+              </div>
+            ) : (
+              <div className="mb-4 w-80 border">
+                <Image
+                  src={previewImage}
+                  alt="Preview"
+                  width={200}
+                  height={150}
+                />
+              </div>
+            )}
             <input type="file" onChange={handleImageChange} />
           </div>
-          <button className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8">
+          <button className="bg-rose-400 text-white px-8 py-4 rounded-full my-8">
             編集内容を登録する
           </button>
         </form>
