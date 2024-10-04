@@ -2,7 +2,11 @@
 
 import React from 'react';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
-import { SingleMarker } from '../types';
+
+type SingleMarker = {
+  title: string;
+  position: { lat: number; lng: number };
+} | null;
 
 function GoogleMapSingle({ marker }: { marker: SingleMarker }) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;

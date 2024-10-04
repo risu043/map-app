@@ -2,13 +2,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { fetchMarkers } from '../marker';
 import { Marker } from '@prisma/client';
 
 export default function MarkerLists() {
-  const queryClient = useQueryClient();
-
   const {
     data: markers,
     isLoading,
@@ -17,8 +15,6 @@ export default function MarkerLists() {
   } = useQuery<Marker[], Error>({
     queryKey: ['fetchMarkers'],
     queryFn: fetchMarkers,
-    initialData: queryClient.getQueryData(['fetchMarkers']),
-    staleTime: 0,
   });
 
   if (isLoading) {

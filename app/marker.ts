@@ -1,5 +1,4 @@
 import { Marker } from '@prisma/client';
-import { FormattedMarker } from './types';
 
 export const fetchMarkers = async () => {
   try {
@@ -18,16 +17,9 @@ export const fetchMarkers = async () => {
 export const fetchMarker = async (id: Marker['id']) => {
   try {
     const res = await fetch(`/api/markers/${id}`);
-    const marker: Marker = await res.json();
-    const formattedMarker: FormattedMarker = {
-      id: marker.id,
-      position: { lat: marker.lat, lng: marker.lng },
-      title: marker.title,
-      category: marker.category,
-      image: marker.image,
-      message: marker.message,
-    };
-    return formattedMarker;
+    const data: Marker = await res.json();
+
+    return data;
   } catch (error) {
     console.error('マーカーの取得に失敗しました:', error);
   }

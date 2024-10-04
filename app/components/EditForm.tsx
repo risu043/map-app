@@ -35,7 +35,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
       setImage(newImage);
       setTargetMarker({
         title: marker.title,
-        position: marker.position,
+        position: { lat: marker.lat, lng: marker.lng },
       });
     }
   }, [marker]);
@@ -140,7 +140,12 @@ export default function EditForm({ markerId }: { markerId: number }) {
 
       <div>
         <div className="mb-4">
-          <GoogleMapSingle marker={targetMarker} />
+          <GoogleMapSingle
+            marker={{
+              title: targetMarker.title,
+              position: targetMarker.position,
+            }}
+          />
         </div>
         <form
           encType="multipart/form-data"
@@ -188,12 +193,18 @@ export default function EditForm({ markerId }: { markerId: number }) {
                   alt="Preview"
                   width={200}
                   height={150}
+                  priority
                 />
               </div>
             )}
             <input type="file" onChange={handleImageChange} />
           </div>
-          <button className="bg-rose-400 text-white px-8 py-4 rounded-full my-8">
+          <button
+            disabled={isUploading}
+            className={`bg-rose-400 text-white px-8 py-4 rounded-full my-8 ${
+              isUploading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
             編集内容を登録する
           </button>
         </form>

@@ -2,14 +2,13 @@
 
 import React from 'react';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { fetchMarkers } from '../marker';
 import { Marker } from '@prisma/client';
 
 const GoogleMap = () => {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const {
     data: markers,
     isLoading,
@@ -18,8 +17,6 @@ const GoogleMap = () => {
   } = useQuery<Marker[], Error>({
     queryKey: ['fetchMarkers'],
     queryFn: fetchMarkers,
-    initialData: queryClient.getQueryData(['fetchMarkers']),
-    staleTime: 1 * 60 * 1000,
   });
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
