@@ -1,8 +1,11 @@
 'use client';
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { getCurrentUser, signOut } from '../auth';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { LogIn, LogOut } from 'lucide-react';
 
 export default function Auth() {
   const router = useRouter();
@@ -25,17 +28,27 @@ export default function Auth() {
 
   if (!user) {
     return (
-      <div className="flex gap-4">
-        <Link href="/sign_up">新規登録</Link>
-        <Link href="/sign_in">ログイン</Link>
+      <div>
+        <Button variant="default" size="sm" asChild>
+          <Link href="/sign_in">
+            <LogIn className="mr-2 h-4 w-4" />
+            sign in
+          </Link>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="flex gap-4">
-      {user.email}
-      <button onClick={() => signOutMutation.mutate()}>ログアウト</button>
+    <div className="flex items-center gap-4">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => signOutMutation.mutate()}
+      >
+        <LogOut className="mr-2 h-4 w-4" />
+        sign out
+      </Button>
     </div>
   );
 }

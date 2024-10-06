@@ -6,6 +6,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { fetchMarkers } from '../marker';
 import { Marker } from '@prisma/client';
+import { Card, CardContent } from '@/components/ui/card';
+import { Loader2, MapPin, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const GoogleMap = () => {
   const router = useRouter();
@@ -30,30 +33,37 @@ const GoogleMap = () => {
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          width: '800px',
-          height: '700px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        Loading map...
-      </div>
+      <Card className="w-full h-[700px] flex justify-center items-center">
+        <CardContent className="flex flex-col items-center space-y-4">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="text-lg font-medium text-muted-foreground">
+            Loading map...
+          </p>
+        </CardContent>
+      </Card>
     );
   }
 
   if (isError) {
     return (
-      <div>
-        Error: {error instanceof Error ? error.message : 'An error occurred'}
-      </div>
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>
+          {error instanceof Error ? error.message : 'An error occurred'}
+        </AlertDescription>
+      </Alert>
     );
   }
 
-  if (!markers) {
-    return <div>No markers found</div>;
+  if (!markers || markers.length === 0) {
+    return (
+      <Alert>
+        <MapPin className="h-4 w-4" />
+        <AlertTitle>No Markers</AlertTitle>
+        <AlertDescription>No markers found on the map</AlertDescription>
+      </Alert>
+    );
   }
 
   const handleMarkerClick = (id: number) => {
@@ -63,7 +73,7 @@ const GoogleMap = () => {
   return (
     <APIProvider apiKey={apiKey}>
       <Map
-        style={{ width: '800px', height: '700px' }}
+        style={{ width: '100%', height: '100%' }}
         defaultCenter={center}
         defaultZoom={10}
         gestureHandling={'greedy'}

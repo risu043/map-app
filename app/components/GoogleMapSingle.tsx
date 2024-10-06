@@ -18,7 +18,7 @@ function GoogleMapSingle({ marker }: { marker: SingleMarker }) {
 
   if (!marker) {
     return (
-      <div className="w-[400px] h-[300px] border grid items-center">
+      <div className="w-full h-80 border grid items-center">
         <p className="text-center">No marker data available</p>
       </div>
     );
@@ -27,7 +27,7 @@ function GoogleMapSingle({ marker }: { marker: SingleMarker }) {
   return (
     <APIProvider apiKey={apiKey}>
       <Map
-        style={{ width: '400px', height: '300px' }}
+        style={{ width: '100%', height: '100%' }}
         center={marker.position}
         defaultZoom={13}
         gestureHandling={'greedy'}

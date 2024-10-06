@@ -16,9 +16,11 @@ export default async function StaticPage() {
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <div className="grid items-center justify-items-center min-h-screen">
+    <div>
       <HydrationBoundary state={dehydratedState}>
-        <GoogleMap />
+        <div className="w-full h-[80vh]">
+          <GoogleMap />
+        </div>
       </HydrationBoundary>
     </div>
   );

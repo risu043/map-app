@@ -1,15 +1,33 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { editMarker } from '../marker';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { editMarker, fetchMarker } from '../marker';
 import { useRouter } from 'next/navigation';
 import GoogleMapSingle from './GoogleMapSingle';
-import { fetchMarker } from '../marker';
-import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import supabase from '../lib/supabase';
 import { SingleMarker } from '../types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Loader2, Search, Upload, Edit } from 'lucide-react';
+import { APIProvider } from '@vis.gl/react-google-maps';
 
 export default function EditForm({ markerId }: { markerId: number }) {
   const [address, setAddress] = useState('');
@@ -20,11 +38,13 @@ export default function EditForm({ markerId }: { markerId: number }) {
   const [isUploading, setIsUploading] = useState(false);
   const [targetMarker, setTargetMarker] = useState<SingleMarker>(null);
   const [previewImage, setPreviewImage] = useState('');
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
 
   const { data: marker, isLoading } = useQuery({
     queryKey: ['marker', markerId],
     queryFn: () => fetchMarker(markerId),
   });
+
   useEffect(() => {
     if (marker) {
       setAddress(marker.title);
@@ -106,109 +126,134 @@ export default function EditForm({ markerId }: { markerId: number }) {
       queryClient.invalidateQueries({
         queryKey: ['marker', 'fetchMarkers'],
       });
-      alert('施設施設を編集しました');
+      alert('施設を編集しました');
       router.push('/lists');
     },
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   if (!targetMarker) {
-    return <div>No markers found</div>;
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>マーカーが見つかりません</AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (!apiKey) {
+    return <div>Google Maps API key is not set</div>;
   }
 
   return (
-    <>
-      <div className="mb-4">編集フォーム</div>
-      <form onSubmit={handleSubmit} className="mb-4">
-        <input
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="住所または施設名を入力"
-          className="border p-4"
-        />
-        <input
-          type="submit"
-          value="検索"
-          className="bg-gray-200 p-4 cursor-pointer"
-        />
-      </form>
-      {result && <div className="mb-4">{result}</div>}
-
-      <div>
-        <div className="mb-4">
-          <GoogleMapSingle
-            marker={{
-              title: targetMarker.title,
-              position: targetMarker.position,
-            }}
-          />
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">施設編集フォーム</CardTitle>
+        <CardDescription>施設情報を編集します</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex space-x-2">
+            <Input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="住所または施設名を入力"
+              className="flex-grow"
+            />
+            <Button type="submit">
+              <Search className="mr-2 h-4 w-4" />
+              検索
+            </Button>
+          </div>
+        </form>
+        {result && (
+          <Alert variant="destructive">
+            <AlertDescription>{result}</AlertDescription>
+          </Alert>
+        )}
+        <div className="h-64 w-full">
+          <APIProvider apiKey={apiKey}>
+            <GoogleMapSingle marker={targetMarker} />
+          </APIProvider>
         </div>
         <form
-          encType="multipart/form-data"
-          onSubmit={() => editMarkerMutation.mutate()}
+          onSubmit={(e) => {
+            e.preventDefault();
+            editMarkerMutation.mutate();
+          }}
+          className="space-y-4"
         >
-          <div className="mb-4">
-            <input
-              type="text"
+          <div className="space-y-2">
+            <Label htmlFor="message">メッセージ</Label>
+            <Input
+              id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="メッセージ"
-              className="border p-4"
+              placeholder="施設に関するメッセージを入力"
             />
           </div>
-          <div className="mb-4">
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="border p-4"
-            >
-              <option value="">Select a category</option>
-              <option value="sample1">sample1</option>
-              <option value="sample2">sample1</option>
-              <option value="sample3">sample1</option>
-            </select>
+          <div className="space-y-2">
+            <Label htmlFor="category">カテゴリー</Label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger>
+                <SelectValue placeholder="カテゴリーを選択" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="sample1">sample1</SelectItem>
+                <SelectItem value="sample2">sample2</SelectItem>
+                <SelectItem value="sample3">sample3</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="mb-4">
-            {isUploading ? (
-              <div className="relative mb-4 w-80 border">
+          <div className="space-y-2">
+            <Label htmlFor="image">画像</Label>
+            <div className="flex items-center space-x-4">
+              <div className="relative w-40 h-30 border">
+                {isUploading ? (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-white" />
+                  </div>
+                ) : null}
                 <Image
                   src={previewImage}
                   alt="Preview"
                   width={200}
                   height={150}
-                  className="relative z-10"
+                  className="z-10"
                 />
-                <div className="absolute inset-0 bg-black opacity-50 z-20 flex justify-center items-center">
-                  <div className="loader" />
+              </div>
+              <Label htmlFor="image-upload" className="cursor-pointer">
+                <div className="flex items-center space-x-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md">
+                  <Upload className="h-4 w-4" />
+                  <span>画像をアップロード</span>
                 </div>
-              </div>
-            ) : (
-              <div className="mb-4 w-80 border">
-                <Image
-                  src={previewImage}
-                  alt="Preview"
-                  width={200}
-                  height={150}
-                  priority
+                <Input
+                  id="image-upload"
+                  type="file"
+                  className="hidden"
+                  onChange={handleImageChange}
+                  accept="image/*"
                 />
-              </div>
-            )}
-            <input type="file" onChange={handleImageChange} />
+              </Label>
+            </div>
           </div>
-          <button
-            disabled={isUploading}
-            className={`bg-rose-400 text-white px-8 py-4 rounded-full my-8 ${
-              isUploading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isUploading || editMarkerMutation.isPending}
           >
-            編集内容を登録する
-          </button>
+            <Edit className="mr-2 h-4 w-4" />
+            {editMarkerMutation.isPending ? '編集中...' : '編集内容を登録する'}
+          </Button>
         </form>
-      </div>
-    </>
+      </CardContent>
+    </Card>
   );
 }

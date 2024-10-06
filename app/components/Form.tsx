@@ -5,16 +5,35 @@ import { addMarker } from '../marker';
 import { useRouter } from 'next/navigation';
 import GoogleMapSingle from './GoogleMapSingle';
 import { SingleMarker } from '../types';
+import { APIProvider } from '@vis.gl/react-google-maps';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Search, PlusCircle } from 'lucide-react';
 
 export default function Form() {
   const [address, setAddress] = useState('');
   const [result, setResult] = useState('');
-  const [markerPosition, setMarkerPosition] =
-    useState<google.maps.LatLngLiteral | null>(null);
   const [marker, setMarker] = useState<SingleMarker>(null);
   const [message, setMessage] = useState('');
   const [category, setCategory] = useState('');
   const router = useRouter();
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,27 +43,24 @@ export default function Form() {
     geocoder.geocode({ address: address }, (results, status) => {
       if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
         const location = results[0].geometry.location;
-        const latLng = { lat: location.lat(), lng: location.lng() };
-        setMarkerPosition(latLng);
-        setResult('');
         setMarker({
           title: address,
           position: { lat: location.lat(), lng: location.lng() },
         });
+        setResult('');
       } else {
         setResult('施設が見つかりませんでした。');
-        setMarkerPosition(null);
       }
     });
   };
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (markerPosition && address) {
+    if (marker && address) {
       try {
         const newMarker = await addMarker({
-          lat: markerPosition.lat,
-          lng: markerPosition.lng,
+          lat: marker.position.lat,
+          lng: marker.position.lng,
           title: address,
           message: message,
           category: category,
@@ -61,55 +77,77 @@ export default function Form() {
     }
   };
 
+  if (!apiKey) {
+    return <div>Google Maps API key is not set</div>;
+  }
+
   return (
     <>
-      <div className="mb-4">登録フォーム</div>
-      <form onSubmit={handleSubmit} className="mb-4">
-        <input
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="住所または施設名を入力"
-          className="border p-4"
-        />
-        <input
-          type="submit"
-          value="検索"
-          className="bg-gray-200 p-4 cursor-pointer"
-        />
-      </form>
-      {result && <div className="mb-4">{result}</div>}
-      <div>
-        <div className="mb-4">
-          <GoogleMapSingle marker={marker} />
-        </div>
-        <form onSubmit={handleRegister}>
-          <div className="mb-4">
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="メッセージ"
-              className="border p-4"
-            />
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">施設登録フォーム</CardTitle>
+          <CardDescription>新しい施設を検索して登録します</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex space-x-2">
+              <Input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="住所または施設名を入力"
+                className="flex-grow"
+              />
+              <Button type="submit">
+                <Search className="mr-2 h-4 w-4" />
+                検索
+              </Button>
+            </div>
+          </form>
+          {result && (
+            <Alert variant="destructive">
+              <AlertDescription>{result}</AlertDescription>
+            </Alert>
+          )}
+          <div className="w-full h-80">
+            <APIProvider apiKey={apiKey}>
+              <GoogleMapSingle marker={marker} />
+            </APIProvider>
           </div>
-          <div className="mb-4">
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="border p-4"
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="message">メッセージ</Label>
+              <Input
+                id="message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="施設に関するメッセージを入力"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">カテゴリー</Label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="カテゴリーを選択" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sample1">sample1</SelectItem>
+                  <SelectItem value="sample2">sample2</SelectItem>
+                  <SelectItem value="sample3">sample3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={!marker || !address}
             >
-              <option value="">Select a category</option>
-              <option value="sample1">sample1</option>
-              <option value="sample2">sample2</option>
-              <option value="sample3">sample3</option>
-            </select>
-          </div>
-          <button className="bg-rose-400 text-white px-8 py-4 rounded-full mt-8">
-            この施設を登録する
-          </button>
-        </form>
-      </div>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              この施設を登録する
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </>
   );
 }
