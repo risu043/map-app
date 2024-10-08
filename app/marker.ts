@@ -1,11 +1,15 @@
 import { Marker } from '@prisma/client';
 
 export const fetchMarkers = async () => {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const apiUrl = `${baseUrl}/api/markers`;
+
   try {
-    const res = await fetch('http://localhost:3000/api/markers');
+    const res = await fetch(apiUrl);
     if (!res.ok) {
       throw new Error(`Failed to fetch markers: ${res.status}`);
     }
+
     const data: Marker[] = await res.json();
     return data;
   } catch (error) {

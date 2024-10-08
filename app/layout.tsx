@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import Link from 'next/link';
-import './globals.css';
 import Provider from './components/Provider';
-import Auth from './components/Auth';
-import { MapPin } from 'lucide-react';
+import Header from './components/Header';
+import './globals.css';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -18,10 +16,22 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'React Map App',
-  description: 'An interactive map application built with React and Next.js',
+  title: 'Map App',
+  description: 'An interactive map application built with Next.js',
+  openGraph: {
+    title: 'Map App',
+    description: 'An interactive map application built with Next.js',
+    url: process.env.NEXT_PUBLIC_APP_URL,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/images/ogp.jpg`,
+        width: 1200,
+        height: 630,
+        alt: 'OGP Image for Map App',
+      },
+    ],
+  },
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,40 +42,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-50`}
       >
-        <header className="border-b bg-white dark:bg-gray-800 shadow-sm">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <Link href="/" className="flex items-center gap-2">
-                <MapPin className="h-8 w-8 text-primary" />
-                <h1 className="text-2xl font-bold">React Map App</h1>
-              </Link>
-              <nav className="hidden md:flex items-center space-x-4">
-                <Link
-                  href="/about"
-                  className="text-sm font-medium hover:text-primary transition-colors"
-                >
-                  About
-                </Link>
-                <Link
-                  href="/lists"
-                  className="text-sm font-medium hover:text-primary transition-colors"
-                >
-                  Lists
-                </Link>
-                <Link
-                  href="/form"
-                  className="text-sm font-medium hover:text-primary transition-colors"
-                >
-                  Form
-                </Link>
-              </nav>
-            </div>
-            <Provider>
-              <Auth />
-            </Provider>
-          </div>
-        </header>
-        <main className="container mx-auto px-4 py-8">
+        <Header />
+        <main className="container mx-auto px-4 py-8 mt-16">
           <Provider>{children}</Provider>
         </main>
       </body>

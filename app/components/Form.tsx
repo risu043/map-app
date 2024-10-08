@@ -25,6 +25,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Search, PlusCircle } from 'lucide-react';
+import AuthButton from './AuthButton';
+import { getCurrentUser } from '../auth';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export default function Form() {
   const [address, setAddress] = useState('');
@@ -34,6 +37,13 @@ export default function Form() {
   const [category, setCategory] = useState('');
   const router = useRouter();
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
+
+  const { data: user } = useQuery({
+    queryKey: ['current_user'],
+    queryFn: getCurrentUser,
+  });
+
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,6 +77,9 @@ export default function Form() {
           image: '/images/noimage.jpg',
         });
         if (newMarker) {
+          await queryClient.invalidateQueries({
+            queryKey: ['marker', 'fetchMarkers'],
+          });
           alert('施設が正常に登録されました。');
           router.push('/lists');
         }
@@ -137,14 +150,21 @@ export default function Form() {
                 </SelectContent>
               </Select>
             </div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={!marker || !address}
-            >
-              <PlusCircle className="mr-2 h-4 w-4" />
-              この施設を登録する
-            </Button>
+            {user ? (
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={!marker || !address}
+              >
+                <PlusCircle className="mr-2 h-4 w-4" />
+                この施設を登録する
+              </Button>
+            ) : (
+              <AuthButton variant="default" className="w-full">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                この施設を登録する
+              </AuthButton>
+            )}
           </form>
         </CardContent>
       </Card>

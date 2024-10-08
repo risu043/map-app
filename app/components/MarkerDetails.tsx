@@ -16,7 +16,8 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MessageCircle, Tag } from 'lucide-react';
+import { MessageCircle, Pencil, Tag, Trash2 } from 'lucide-react';
+import AuthButton from './AuthButton';
 
 export default function MarkerDetails({ markerId }: { markerId: number }) {
   const { data: marker, isLoading } = useQuery({
@@ -94,10 +95,21 @@ export default function MarkerDetails({ markerId }: { markerId: number }) {
           />
         </div>
       </CardContent>
-      {user && (
+      {user ? (
         <CardFooter className="flex justify-end space-x-2">
           <EditButton id={marker.id} />
           <DeleteButton id={marker.id} />
+        </CardFooter>
+      ) : (
+        <CardFooter className="flex justify-end space-x-2">
+          <AuthButton variant="default">
+            <Pencil className="mr-2 h-4 w-4" />
+            編集する
+          </AuthButton>
+          <AuthButton variant="outline">
+            <Trash2 className="mr-2 h-4 w-4" />
+            削除する
+          </AuthButton>
         </CardFooter>
       )}
     </Card>
