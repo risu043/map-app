@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import { fetchMarkers } from '../marker';
 import { Marker } from '@prisma/client';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,

@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMarker } from '../marker';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 export default function DeleteButton({ id }: { id: number }) {
   const queryClient = useQueryClient();
