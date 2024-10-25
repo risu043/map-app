@@ -20,6 +20,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { UserPlus } from 'lucide-react';
 
 export default function SignUpForm() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -27,7 +28,7 @@ export default function SignUpForm() {
   const queryClient = useQueryClient();
 
   const signUpMutation = useMutation({
-    mutationFn: () => signUp(email, password),
+    mutationFn: () => signUp(name, email, password),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['current_user'],
@@ -53,6 +54,17 @@ export default function SignUpForm() {
         </CardHeader>
         <form onSubmit={handleFormSubmit}>
           <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

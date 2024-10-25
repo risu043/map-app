@@ -34,6 +34,13 @@ const NavLinks: React.FC<NavLinksProps> = ({ onClick }) => (
     >
       Form
     </Link>
+    <Link
+      href="/profile"
+      className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
+      onClick={onClick}
+    >
+      Profile
+    </Link>
   </>
 );
 
