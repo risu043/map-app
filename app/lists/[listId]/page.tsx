@@ -1,5 +1,7 @@
 import { fetchMarkers } from '../../marker';
 import MarkerDetails from '../../components/MarkerDetails';
+import Posts from '@/app/components/Posts';
+import PostForm from '@/app/components/PostForm';
 
 export async function generateStaticParams() {
   try {
@@ -27,8 +29,11 @@ export default async function StaticDetailPage({
 
   return (
     <>
-      <div>
+      <div className="w-full max-w-3xl mx-auto">
         <MarkerDetails markerId={markerId} />
+        <h3 className="mt-8 mb-2">みんなのレビュー</h3>
+        <Posts markerId={markerId} />
+        <PostForm markerId={markerId} />
       </div>
     </>
   );

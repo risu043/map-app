@@ -30,7 +30,7 @@ export default function UserProfileEdit() {
       if (user) {
         setName(user.user_metadata.name || '');
         setEmail(user.email || '');
-        setProfileImage(user.user_metadata.profile_image || 'dfault.png');
+        setProfileImage(user.user_metadata.profile_image || 'default.png');
         setLoading(false);
       } else {
         router.push('/sign_in');

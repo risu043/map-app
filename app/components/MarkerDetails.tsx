@@ -32,7 +32,7 @@ export default function MarkerDetails({ markerId }: { markerId: number }) {
 
   if (isLoading) {
     return (
-      <Card className="w-full max-w-3xl mx-auto">
+      <Card>
         <CardHeader>
           <Skeleton className="h-8 w-3/4" />
         </CardHeader>
@@ -48,7 +48,7 @@ export default function MarkerDetails({ markerId }: { markerId: number }) {
 
   if (!marker) {
     return (
-      <Card className="w-full max-w-3xl mx-auto">
+      <Card>
         <CardContent className="flex items-center justify-center h-64">
           <p className="text-muted-foreground">No markers found</p>
         </CardContent>
@@ -57,7 +57,7 @@ export default function MarkerDetails({ markerId }: { markerId: number }) {
   }
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle className="text-2xl font-bold">{marker.title}</CardTitle>
       </CardHeader>
