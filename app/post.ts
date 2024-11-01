@@ -63,3 +63,17 @@ export const createPost = async ({
     throw error;
   }
 };
+
+export const deletePost = async (id: number): Promise<void> => {
+  try {
+    const { error } = await supabase.from('posts').delete().eq('id', id);
+
+    if (error) {
+      console.error('Error delete post:', error);
+      throw new Error('Failed to delete post');
+    }
+  } catch (error) {
+    console.error('Error in deletePost:', error);
+    throw error;
+  }
+};

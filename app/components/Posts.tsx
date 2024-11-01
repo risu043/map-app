@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { fetchPosts } from '../post';
+import { getCurrentUser } from '../auth';
+import DeletePostButton from './DeletePostButton';
 
 export default function Posts({ markerId }: { markerId: number }) {
   const { data: posts } = useQuery({
@@ -11,9 +13,10 @@ export default function Posts({ markerId }: { markerId: number }) {
     queryFn: () => fetchPosts(markerId),
   });
 
-  useEffect(() => {
-    console.log(posts);
-  }, [posts]);
+  const { data: user } = useQuery({
+    queryKey: ['current_user'],
+    queryFn: getCurrentUser,
+  });
 
   if (!posts) {
     return <div className="p-4">Loading...</div>;
@@ -64,6 +67,9 @@ export default function Posts({ markerId }: { markerId: number }) {
                     <p>{post.profiles.name}</p>
                   </div>
                   <p className="py-2">{post.title}</p>
+                  {user?.id === post.userId ? (
+                    <DeletePostButton id={post.id} />
+                  ) : null}
                 </div>
               );
             })
