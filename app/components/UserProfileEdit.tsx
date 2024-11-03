@@ -48,7 +48,7 @@ export default function UserProfileEdit() {
       } = await supabase.auth.getUser();
       if (user) {
         setName(user.user_metadata.name || '');
-        setEmail(user.email || '');
+        setEmail(user.new_email || user.email || '');
         setProfileImage(
           user.user_metadata.profile_image || {
             value: 'default.png',

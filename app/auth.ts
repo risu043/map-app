@@ -38,3 +38,22 @@ export const signOut = async () => {
     throw error;
   }
 };
+
+export const sendEmail = async (email: string) => {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const apiUrl = `${baseUrl}/reset-password`;
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: apiUrl,
+  });
+  if (error) {
+    throw error;
+  }
+};
+
+export const resetPassword = async (password: string) => {
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    throw error;
+  }
+};
