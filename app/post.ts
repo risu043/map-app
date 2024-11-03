@@ -20,11 +20,10 @@ type PostWithProfile = {
 };
 
 export const fetchPosts = async (id: number): Promise<PostWithProfile[]> => {
-  try {
-    const { data, error } = (await supabase
-      .from('posts')
-      .select(
-        `
+  const { data, error } = (await supabase
+    .from('posts')
+    .select(
+      `
         *,
         profiles:userId (
           id,
@@ -33,19 +32,14 @@ export const fetchPosts = async (id: number): Promise<PostWithProfile[]> => {
           profile_image
         )
       `
-      )
-      .eq('markerId', id)) as PostgrestResponse<PostWithProfile>;
+    )
+    .eq('markerId', id)) as PostgrestResponse<PostWithProfile>;
 
-    if (error) {
-      console.error('Error fetching posts:', error);
-      throw new Error('Failed to fetch posts');
-    }
-
-    return data || [];
-  } catch (error) {
-    console.error('Error in fetchPosts:', error);
+  if (error) {
     throw error;
   }
+
+  return data || [];
 };
 
 export const createPost = async ({
@@ -65,15 +59,24 @@ export const createPost = async ({
 };
 
 export const deletePost = async (id: number): Promise<void> => {
-  try {
-    const { error } = await supabase.from('posts').delete().eq('id', id);
+  const { error } = await supabase.from('posts').delete().eq('id', id);
 
-    if (error) {
-      console.error('Error delete post:', error);
-      throw new Error('Failed to delete post');
-    }
-  } catch (error) {
-    console.error('Error in deletePost:', error);
+  if (error) {
+    throw error;
+  }
+};
+
+export const editPost = async ({
+  id,
+  title,
+}: Database['public']['Tables']['posts']['Update']): Promise<void> => {
+  const postId = Number(id);
+  const { error } = await supabase
+    .from('posts')
+    .update({ title })
+    .eq('id', postId);
+
+  if (error) {
     throw error;
   }
 };

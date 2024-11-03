@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { fetchPosts } from '../post';
 import { getCurrentUser } from '../auth';
 import DeletePostButton from './DeletePostButton';
+import EditPostButton from './EditPostButton';
 
 export default function Posts({ markerId }: { markerId: number }) {
   const { data: posts } = useQuery({
@@ -68,7 +69,10 @@ export default function Posts({ markerId }: { markerId: number }) {
                   </div>
                   <p className="py-2">{post.title}</p>
                   {user?.id === post.userId ? (
-                    <DeletePostButton id={post.id} />
+                    <>
+                      <EditPostButton id={post.id} />
+                      <DeletePostButton id={post.id} />
+                    </>
                   ) : null}
                 </div>
               );
