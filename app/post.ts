@@ -69,11 +69,13 @@ export const deletePost = async (id: number): Promise<void> => {
 export const editPost = async ({
   id,
   title,
+  markerId,
+  userId,
 }: Database['public']['Tables']['posts']['Update']): Promise<void> => {
   const postId = Number(id);
   const { error } = await supabase
     .from('posts')
-    .update({ title })
+    .update({ title, markerId, userId })
     .eq('id', postId);
 
   if (error) {
