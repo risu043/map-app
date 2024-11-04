@@ -40,14 +40,6 @@ export default function EditPostButton({
       });
       setIsOpen(false);
     },
-    onError: (error) => {
-      toast({
-        title: 'エラーが発生しました',
-        description:
-          'レビューの編集中にエラーが発生しました。もう一度お試しください。',
-        variant: 'destructive',
-      });
-    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
