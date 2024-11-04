@@ -7,13 +7,11 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { editPost } from '../post';
 import { toast } from '@/hooks/use-toast';
 
@@ -103,76 +101,3 @@ export default function EditPostButton({
     </Dialog>
   );
 }
-
-// import { Button } from '@/components/ui/button';
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogHeader,
-//   DialogTrigger,
-// } from '@/components/ui/dialog';
-// import { Pencil } from 'lucide-react';
-// import { useState } from 'react';
-// import { editPost } from '../post';
-// import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-// export default function EditPostButton({
-//   id,
-//   title,
-//   markerId,
-//   userId,
-// }: {
-//   id: number;
-//   title: string;
-//   markerId: number;
-//   userId: string;
-// }) {
-//   const [editTitle, setEditTitle] = useState(title);
-//   const queryClient = useQueryClient();
-
-//   const mutation = useMutation({
-//     mutationFn: editPost,
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({
-//         queryKey: ['posts'],
-//       });
-//       alert('レビューを編集しました');
-//     },
-//   });
-
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     mutation.mutate({ id, title: editTitle, markerId, userId });
-//   };
-
-//   return (
-//     <Dialog>
-//       <DialogTrigger asChild>
-//         <Button variant="default">
-//           <Pencil className="mr-2 h-4 w-4" />
-//           編集する
-//         </Button>
-//       </DialogTrigger>
-//       <DialogContent className="sm:max-w-[425px]">
-//         <DialogHeader>
-//           <DialogDescription>
-//             <form onSubmit={handleSubmit}>
-//               <input
-//                 type="text"
-//                 value={editTitle}
-//                 onChange={(e) => setEditTitle(e.target.value)}
-//               />
-//               <DialogTrigger asChild>
-//                 <Button type="submit">
-//                   <Pencil className="mr-2 h-4 w-4" />
-//                   編集完了
-//                 </Button>
-//               </DialogTrigger>
-//             </form>
-//           </DialogDescription>
-//         </DialogHeader>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// }
