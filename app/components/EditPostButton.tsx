@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { editPost } from '../post';
-import { toast } from '@/hooks/use-toast';
 
 export default function EditPostButton({
   id,
@@ -34,10 +33,6 @@ export default function EditPostButton({
     mutationFn: editPost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      toast({
-        title: 'レビューを編集しました',
-        description: '変更が正常に保存されました。',
-      });
       setIsOpen(false);
     },
   });
