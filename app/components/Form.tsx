@@ -78,7 +78,7 @@ export default function Form() {
         });
         if (newMarker) {
           await queryClient.invalidateQueries({
-            queryKey: ['marker', 'fetchMarkers'],
+            queryKey: ['fetchMarkers'],
           });
           alert('施設が正常に登録されました。');
           router.push('/lists');
@@ -144,9 +144,9 @@ export default function Form() {
                   <SelectValue placeholder="カテゴリーを選択" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sample1">sample1</SelectItem>
-                  <SelectItem value="sample2">sample2</SelectItem>
-                  <SelectItem value="sample3">sample3</SelectItem>
+                  <SelectItem value="観光">観光</SelectItem>
+                  <SelectItem value="食事">食事</SelectItem>
+                  <SelectItem value="家族">家族</SelectItem>
                 </SelectContent>
               </Select>
             </div>

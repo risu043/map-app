@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { createPost } from '../post';
 import { getCurrentUser } from '../auth';
+import AuthButton from './AuthButton';
+import { PlusCircle } from 'lucide-react';
 
 export default function PostForm({ markerId }: { markerId: number }) {
   const [title, setTitle] = useState('');
@@ -53,13 +55,23 @@ export default function PostForm({ markerId }: { markerId: number }) {
               required
             />
           </div>
-          <Button
-            type="submit"
-            disabled={mutation.isPending}
-            className="w-full"
-          >
-            {mutation.isPending ? '投稿中...' : '投稿する'}
-          </Button>
+
+          {user ? (
+            <Button
+              type="submit"
+              disabled={mutation.isPending}
+              className="w-full"
+            >
+              <PlusCircle className="mr-2 h-4 w-4" />
+              {mutation.isPending ? '投稿中...' : '投稿する'}
+            </Button>
+          ) : (
+            <AuthButton variant="default" className="w-full">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              投稿する
+            </AuthButton>
+          )}
+
           {mutation.isError && (
             <p className="text-red-500 text-sm">{mutation.error.message}</p>
           )}

@@ -124,7 +124,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['marker', 'fetchMarkers'],
+        queryKey: ['fetchMarkers'],
       });
       alert('施設を編集しました');
       router.push('/lists');
@@ -206,9 +206,9 @@ export default function EditForm({ markerId }: { markerId: number }) {
                 <SelectValue placeholder="カテゴリーを選択" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="sample1">sample1</SelectItem>
-                <SelectItem value="sample2">sample2</SelectItem>
-                <SelectItem value="sample3">sample3</SelectItem>
+                <SelectItem value="観光">観光</SelectItem>
+                <SelectItem value="食事">食事</SelectItem>
+                <SelectItem value="家族">家族</SelectItem>
               </SelectContent>
             </Select>
           </div>

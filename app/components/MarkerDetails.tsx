@@ -62,14 +62,14 @@ export default function MarkerDetails({ markerId }: { markerId: number }) {
         <CardTitle className="text-2xl font-bold">{marker.title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-8">
-        <div className="relative h-64 md:h-96 w-full overflow-hidden rounded-lg">
+        <div className="relative h-64 md:h-96 w-full rounded-lg">
           <Image
             src={marker.image}
             alt={marker.title}
             layout="fill"
             objectFit="cover"
             priority
-            className="transition-transform duration-300 hover:scale-105"
+            className="rounded-lg"
           />
         </div>
         <div className="grid gap-4 md:grid-cols-2">
