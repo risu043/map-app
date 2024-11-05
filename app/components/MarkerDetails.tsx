@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MessageCircle, Pencil, Tag, Trash2 } from 'lucide-react';
 import AuthButton from './AuthButton';
+import FavoriteButton from './FavoriteButton';
 
 export default function MarkerDetails({ markerId }: { markerId: number }) {
   const { data: marker, isLoading } = useQuery({
@@ -97,6 +98,8 @@ export default function MarkerDetails({ markerId }: { markerId: number }) {
       </CardContent>
       {user ? (
         <CardFooter className="flex justify-end space-x-2">
+          <FavoriteButton markerId={marker.id} />
+
           <EditButton id={marker.id} />
           <DeleteButton id={marker.id} />
         </CardFooter>

@@ -19,9 +19,8 @@ export default function Auth() {
   const signOutMutation = useMutation({
     mutationFn: signOut,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['current_user'],
-      });
+      queryClient.removeQueries({ queryKey: ['current_user'] });
+      queryClient.removeQueries({ queryKey: ['current_user_like'] });
       router.push('/');
     },
   });

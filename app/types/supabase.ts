@@ -42,6 +42,35 @@ export type Database = {
         }
         Relationships: []
       }
+      likes: {
+        Row: {
+          created_at: string
+          id: number
+          markerid: number
+          userid: string
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          markerid: number
+          userid?: string
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          markerid?: number
+          userid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_markerid_fkey"
+            columns: ["markerid"]
+            isOneToOne: false
+            referencedRelation: "markers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       markers: {
         Row: {
           category: string
