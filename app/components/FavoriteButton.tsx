@@ -32,7 +32,7 @@ export default function FavoriteButton({ markerId }: { markerId: number }) {
     mutationFn: toggleFavorite,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['current_user_like', markerId],
+        queryKey: ['current_user_like'],
       });
     },
   });

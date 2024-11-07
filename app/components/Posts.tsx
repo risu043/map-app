@@ -10,6 +10,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import DeletePostButton from './DeletePostButton';
@@ -46,7 +47,7 @@ export default function Posts({ markerId }: { markerId: number }) {
 
   if (!posts || posts.length === 0) {
     return (
-      <Card>
+      <Card className="mt-8">
         <CardContent className="p-6 text-center text-gray-500">
           レビューがまだありません
         </CardContent>
@@ -55,16 +56,16 @@ export default function Posts({ markerId }: { markerId: number }) {
   }
 
   return (
-    <div className="space-y-4">
+    <Card className="mt-8">
+      <CardHeader>
+        <CardTitle>みんなのレビュー</CardTitle>
+      </CardHeader>
       {posts.map((post) => {
         const profileImage =
           post.profiles.profile_image || '/images/default.png';
         return (
-          <Card
-            key={post.id}
-            className="overflow-hidden transition-shadow hover:shadow-lg"
-          >
-            <CardHeader className="flex flex-row items-center gap-4">
+          <CardContent key={post.id} className="pr-0">
+            <div className="flex gap-4 items-center mb-4">
               <Image
                 src={`/images/${profileImage}`}
                 alt={posts[0].profiles.name}
@@ -76,12 +77,10 @@ export default function Posts({ markerId }: { markerId: number }) {
               <div>
                 <h3 className="text-lg font-semibold">{post.profiles.name}</h3>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-700">{post.title}</p>
-            </CardContent>
+            </div>
+            <p className="text-gray-700">{post.title}</p>
             {user?.id === post.userId && (
-              <CardFooter className="justify-end space-x-2">
+              <CardFooter className="flex justify-end items-end gap-4 mt-2">
                 <EditPostButton
                   id={post.id}
                   title={post.title}
@@ -91,9 +90,9 @@ export default function Posts({ markerId }: { markerId: number }) {
                 <DeletePostButton id={post.id} />
               </CardFooter>
             )}
-          </Card>
+          </CardContent>
         );
       })}
-    </div>
+    </Card>
   );
 }

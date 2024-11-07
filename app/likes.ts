@@ -1,5 +1,6 @@
 import supabase from './lib/supabase';
 import { Database } from './types/supabase';
+import { PostgrestResponse } from '@supabase/supabase-js';
 
 export async function checkFavorite(id: number) {
   const { data, error } = await supabase
@@ -52,34 +53,34 @@ export const toggleFavorite = async ({
   }
 };
 
-// export const createFavorite = async ({
-//   id,
-// }: Database['public']['Tables']['likes']['Insert']): Promise<void> => {
-//   const markerid = Number(id);
-//   const { error } = await supabase.from('likes').insert({ markerid });
+type Marker = {
+  title: string;
+  image: string;
+};
 
-//   if (error) {
-//     throw error;
-//   }
-// };
+type FavoriteMarker = {
+  id: number;
+  userid: string;
+  markerid: number;
+  created_at: string;
+  markers: Marker;
+};
 
-// export const deleteFavorite = async (id: number): Promise<void> => {
-//   const { error } = await supabase.from('likes').delete().eq('markerid', id);
+export async function fetchFavoriteMarkers(): Promise<FavoriteMarker[]> {
+  const { data, error } = (await supabase.from('likes').select(
+    `
+    *,
+    markers:markerid (
+    title,
+    image
+    )
+    `
+  )) as PostgrestResponse<FavoriteMarker>;
 
-//   if (error) {
-//     throw error;
-//   }
-// };
-// export const toggleFavorite = async ({
-//   markerId,
-//   isFavorite,
-// }: {
-//   markerId: number;
-//   isFavorite: boolean;
-// }) => {
-//   if (isFavorite) {
-//     await deleteFavorite(markerId);
-//   } else {
-//     await createFavorite(markerId);
-//   }
-// };
+  if (error) {
+    console.error('Error fetching favorite markers:', error);
+    throw error;
+  }
+
+  return data || [];
+}

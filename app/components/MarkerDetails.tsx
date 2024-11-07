@@ -97,14 +97,15 @@ export default function MarkerDetails({ markerId }: { markerId: number }) {
         </div>
       </CardContent>
       {user ? (
-        <CardFooter className="flex justify-end space-x-2">
+        <CardFooter className="flex justify-end items-end gap-4 md:flex-row flex-col">
           <FavoriteButton markerId={marker.id} />
-
-          <EditButton id={marker.id} />
-          <DeleteButton id={marker.id} />
+          <div className="flex justify-end gap-4">
+            <EditButton id={marker.id} />
+            <DeleteButton id={marker.id} />
+          </div>
         </CardFooter>
       ) : (
-        <CardFooter className="flex justify-end space-x-2">
+        <CardFooter className="flex justify-end gap-4">
           <AuthButton variant="default">
             <Pencil className="mr-2 h-4 w-4" />
             編集する
