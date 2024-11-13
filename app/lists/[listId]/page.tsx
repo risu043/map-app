@@ -29,7 +29,7 @@ export default async function StaticDetailPage({
 
   return (
     <>
-      <div className="w-full max-w-3xl mx-auto">
+      <div className="w-full max-w-3xl mx-auto py-8">
         <MarkerDetails markerId={markerId} />
         <Posts markerId={markerId} />
         <PostForm markerId={markerId} />

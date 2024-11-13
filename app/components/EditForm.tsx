@@ -152,7 +152,7 @@ export default function EditForm({ markerId }: { markerId: number }) {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto my-8">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">施設編集フォーム</CardTitle>
         <CardDescription>施設情報を編集します</CardDescription>

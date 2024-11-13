@@ -46,7 +46,7 @@ export default function StaticPage() {
   };
 
   return (
-    <div className="flex items-center justify-center py-8 bg-gray-100 dark:bg-gray-900">
+    <div className="flex items-center justify-center py-8">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>

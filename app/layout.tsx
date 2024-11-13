@@ -42,10 +42,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-50`}
       >
-        <Header />
-        <main className="container mx-auto px-4 py-8 mt-16">
-          <Provider>{children}</Provider>
-        </main>
+        <div id="page">
+          <Header />
+          <main className="mt-16">
+            <Provider>{children}</Provider>
+          </main>
+          <footer className="p-4 bg-white">
+            <ul className="flex justify-center space-x-4 mb-2">
+              <li>利用規約</li>
+              <li>プライバシーポリシー</li>
+              <li>お問い合わせ</li>
+            </ul>
+            <p className="text-center">&copy; ふくふくマップ</p>
+          </footer>
+        </div>
       </body>
     </html>
   );

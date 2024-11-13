@@ -15,10 +15,10 @@ export default async function StaticPage() {
   });
   const dehydratedState = dehydrate(queryClient);
   return (
-    <>
+    <div className="container max-w-6xl mx-auto py-8">
       <HydrationBoundary state={dehydratedState}>
         <MarkerLists />
       </HydrationBoundary>
-    </>
+    </div>
   );
 }

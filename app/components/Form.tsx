@@ -96,7 +96,7 @@ export default function Form() {
 
   return (
     <>
-      <Card className="w-full max-w-2xl mx-auto">
+      <Card className="w-full max-w-2xl mx-auto my-8">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">施設登録フォーム</CardTitle>
           <CardDescription>新しい施設を検索して登録します</CardDescription>
