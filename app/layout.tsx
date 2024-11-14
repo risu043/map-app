@@ -47,11 +47,10 @@ export default function RootLayout({
           <main className="mt-16">
             <Provider>{children}</Provider>
           </main>
-          <footer className="p-4 bg-white">
-            <ul className="flex justify-center space-x-4 mb-2">
+          <footer className="p-2 bg-white">
+            <ul className="flex justify-center space-x-4">
               <li>利用規約</li>
               <li>プライバシーポリシー</li>
-              <li>お問い合わせ</li>
             </ul>
             <p className="text-center">&copy; ふくふくマップ</p>
           </footer>

@@ -87,7 +87,7 @@ const GoogleMap = () => {
             title={marker.title}
             onClick={() => handleMarkerClick(marker.id)}
           >
-            <div className="bg-white border-4 border-indigo-700 w-20 h-20 rounded-full overflow-hidden relative">
+            <div className="bg-white border-4 border-blue-600 w-20 h-20 rounded-full overflow-hidden relative">
               <img
                 src={marker.image}
                 alt={marker.title}

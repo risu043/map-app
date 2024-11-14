@@ -3,8 +3,8 @@ import {
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query';
-import { fetchMarkers } from './../marker';
-import MarkerLists from '../components/MarkerLists';
+import GoogleMap from '../components/GoogleMap';
+import { fetchMarkers } from '../marker';
 
 export default async function StaticPage() {
   const queryClient = new QueryClient();
@@ -14,10 +14,13 @@ export default async function StaticPage() {
     staleTime: 5 * 60 * 1000,
   });
   const dehydratedState = dehydrate(queryClient);
+
   return (
-    <div className="container max-w-6xl mx-auto py-8 px-4">
+    <div>
       <HydrationBoundary state={dehydratedState}>
-        <MarkerLists />
+        <div className="w-full h-[80vh]">
+          <GoogleMap />
+        </div>
       </HydrationBoundary>
     </div>
   );

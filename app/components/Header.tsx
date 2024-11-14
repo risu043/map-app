@@ -14,11 +14,11 @@ interface NavLinksProps {
 const NavLinks: React.FC<NavLinksProps> = ({ onClick }) => (
   <>
     <Link
-      href="/about"
+      href="/map"
       className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
       onClick={onClick}
     >
-      About
+      Map
     </Link>
     <Link
       href="/lists"
@@ -53,7 +53,7 @@ export default function Header() {
     <header className="fixed top-0 z-50 w-full h-16 border-b backdrop-blur-sm bg-white/30 dark:bg-gray-800/30 shadow-sm">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-1">
             <MapPin className="h-8 w-8 text-primary" />
             <h1 className="text-xl md:text-2xl font-bold">ふくふくマップ</h1>
           </Link>

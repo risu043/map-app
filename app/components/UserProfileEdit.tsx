@@ -112,7 +112,7 @@ export default function UserProfileEdit() {
   }
 
   return (
-    <div className="flex items-center justify-center py-8">
+    <div className="flex items-center justify-center py-8 px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Edit Profile</CardTitle>

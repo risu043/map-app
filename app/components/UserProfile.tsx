@@ -44,8 +44,8 @@ export default function UserProfileEdit() {
   }
 
   return (
-    <div className="">
-      <Card className="mx-auto max-w-md">
+    <>
+      <Card className="w-full mx-auto max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Profile</CardTitle>
           <CardDescription>user information</CardDescription>
@@ -79,6 +79,6 @@ export default function UserProfileEdit() {
           </Button>
         </CardFooter>
       </Card>
-    </div>
+    </>
   );
 }

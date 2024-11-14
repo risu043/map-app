@@ -26,8 +26,8 @@ export default async function StaticDetailPage({
   const markerId = parseInt(listId, 10);
 
   return (
-    <>
+    <div className="py-8 px-4">
       <EditForm markerId={markerId} />
-    </>
+    </div>
   );
 }
