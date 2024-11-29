@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Map, List, MessageSquare, ArrowRight } from 'lucide-react';
+import { Map, List, MessageSquare, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
@@ -40,7 +40,7 @@ export default function LandingPage() {
                 onClick={() => router.push('/')}
                 className="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-6 px-8 rounded-full transition-all duration-300 ease-in-out hover:shadow-lg text-lg"
               >
-                マップを見る <ArrowRight className="ml-2" />
+                マップを見る <Map className="ml-2" />
               </Button>
             </motion.div>
             <motion.div {...fadeInUp} className="order-1 md:order-2">
@@ -161,17 +161,17 @@ export default function LandingPage() {
                 <p className="text-gray-700 mb-8">
                   地元の方も、まだ訪れたことのない方も、ぜひ下関の魅力を感じてみませんか？
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center pb-4">
                   <Button
                     onClick={() => router.push('/sign_up')}
-                    className="bg-gradient-to-r from-blue-600 to-sky-400 hover:from-blue-700 hover:to-sky-500 text-white font-semibold py-4 px-6 rounded-full transition-all duration-300 ease-in-out hover:shadow-lg"
+                    className="bg-gradient-to-r from-blue-600 to-sky-400 hover:from-blue-700 hover:to-sky-500 text-white font-semibold py-6 px-8 rounded-full transition-all duration-300 ease-in-out hover:shadow-lg"
                   >
-                    アカウント登録 <ArrowRight className="ml-2" />
+                    アカウント登録 <UserPlus className="ml-2" />
                   </Button>
                   <Button
                     onClick={() => router.push('/')}
                     variant="outline"
-                    className="border-2 border-sky-400 text-sky-400 hover:bg-blue-50 hover:text-sky-500 font-semibold py-4 px-6 rounded-full transition-all duration-300 ease-in-out hover:shadow-lg"
+                    className="border-2 border-sky-400 text-sky-400 hover:bg-blue-50 hover:text-sky-500 font-semibold py-6 px-8 rounded-full transition-all duration-300 ease-in-out hover:shadow-lg"
                   >
                     マップを見る <Map className="ml-2" />
                   </Button>

@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import Provider from './components/Provider';
 import Header from './components/Header';
 import './globals.css';
+import Link from 'next/link';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -49,8 +50,12 @@ export default function RootLayout({
           </main>
           <footer className="p-2 bg-white">
             <ul className="flex justify-center space-x-4">
-              <li>利用規約</li>
-              <li>プライバシーポリシー</li>
+              <li>
+                <Link href="/info/terms">利用規約</Link>
+              </li>
+              <li>
+                <Link href="/info/policy">プライバシーポリシー</Link>
+              </li>
             </ul>
             <p className="text-center">&copy; ふくふくマップ</p>
           </footer>
