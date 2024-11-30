@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Map, List, MessageSquare, UserPlus } from 'lucide-react';
+import { Map, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
@@ -74,10 +74,16 @@ export default function LandingPage() {
               animate="animate"
             >
               {[
-                { icon: Map, text: 'マップからおでかけスポットをさがせる' },
-                { icon: List, text: 'リストからおでかけスポットをさがせる' },
                 {
-                  icon: MessageSquare,
+                  image: '/images/about-ul1-1.png',
+                  text: 'マップからおでかけスポットをさがせる',
+                },
+                {
+                  image: '/images/about-ul1-2.png',
+                  text: 'リストからおでかけスポットをさがせる',
+                },
+                {
+                  image: '/images/about-ul1-3.png',
                   text: 'おでかけした人のレビューがよめる',
                 },
               ].map((item, index) => (
@@ -86,7 +92,14 @@ export default function LandingPage() {
                   className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300"
                   {...fadeInUp}
                 >
-                  <item.icon className="w-16 h-16 mx-auto text-blue-400 mb-4" />
+                  <Image
+                    key={index}
+                    src={item.image}
+                    alt="App Image"
+                    width={300}
+                    height={300}
+                    className="w-full h-autoobject-cover rounded-lg mt-4 mb-8 border"
+                  />
                   <p className="text-center text-lg text-gray-700">
                     {item.text}
                   </p>
@@ -102,7 +115,7 @@ export default function LandingPage() {
               className="text-center text-3xl font-bold mb-12 text-blue-600"
               {...fadeInUp}
             >
-              アカウント登録すると？
+              アカウント登録すると
             </motion.h2>
             <motion.ul
               className="grid md:grid-cols-3 gap-8"
@@ -113,11 +126,17 @@ export default function LandingPage() {
               animate="animate"
             >
               {[
-                { icon: Map, text: '新しいおでかけスポットを登録できる' },
-                { icon: List, text: 'プロフィールを編集できる' },
                 {
-                  icon: MessageSquare,
-                  text: 'おでかけスポットのレビューができる',
+                  image: '/images/about-ul2-1.png',
+                  text: '新しいおでかけスポットを登録できる',
+                },
+                {
+                  image: '/images/about-ul2-2.png',
+                  text: 'プロフィールを編集できる',
+                },
+                {
+                  image: '/images/about-ul2-3.png',
+                  text: 'おでかけスポットのレビューを投稿できる',
                 },
               ].map((item, index) => (
                 <motion.li
@@ -125,7 +144,14 @@ export default function LandingPage() {
                   className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300"
                   {...fadeInUp}
                 >
-                  <item.icon className="w-16 h-16 mx-auto text-indigo-500 mb-4" />
+                  <Image
+                    key={index}
+                    src={item.image}
+                    alt="App Image"
+                    width={300}
+                    height={300}
+                    className="w-full h-autoobject-cover rounded-lg mt-4 mb-8 border"
+                  />
                   <p className="text-center text-lg text-gray-700">
                     {item.text}
                   </p>
