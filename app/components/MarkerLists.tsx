@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
-import { fetchMarkers } from '../marker';
+import { searchMarkers } from '../marker';
 import { Marker } from '@prisma/client';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -15,21 +15,23 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin, Tag } from 'lucide-react';
+import { MessageCircle, Tag } from 'lucide-react';
 
 export default function MarkerLists() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     undefined
   );
 
+  type SearchMarker = Marker & { _count: { posts: number } };
+
   const {
     data: markers,
     isLoading,
     isError,
     error,
-  } = useQuery<Marker[], Error>({
-    queryKey: ['fetchMarkers'],
-    queryFn: fetchMarkers,
+  } = useQuery<SearchMarker[], Error>({
+    queryKey: ['searchMarkers'],
+    queryFn: searchMarkers,
   });
 
   if (isLoading) {
@@ -64,7 +66,7 @@ export default function MarkerLists() {
     );
   }
 
-  const categories = ['sample1', 'sample2', 'sample3'];
+  const categories = ['観光', '食事', 'こども'];
   const filteredMarkers =
     selectedCategory === undefined
       ? markers
@@ -113,9 +115,15 @@ export default function MarkerLists() {
                 <h3 className="font-semibold text-lg mb-2 line-clamp-1">
                   {marker.title}
                 </h3>
-                <div className="flex items-center space-x-2 text-muted-foreground">
-                  <MapPin className="h-4 w-4" />
-                  <span className="text-sm">{marker.category}</span>
+                <div className="flex items-center space-x-6 text-muted-foreground">
+                  <div className="flex items-center space-x-2 text-muted-foreground">
+                    <Tag className="h-4 w-4" />
+                    <span className="text-sm">{marker.category}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-muted-foreground">
+                    <MessageCircle className="h-4 w-4" />
+                    <span className="text-sm">{marker._count.posts}</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>

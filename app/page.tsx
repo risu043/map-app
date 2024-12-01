@@ -37,7 +37,7 @@ export default function LandingPage() {
                 探せるアプリです。
               </p>
               <Button
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/map')}
                 className="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-6 px-8 rounded-full transition-all duration-300 ease-in-out hover:shadow-lg text-lg"
               >
                 マップを見る <Map className="ml-2" />
@@ -195,7 +195,7 @@ export default function LandingPage() {
                     アカウント登録 <UserPlus className="ml-2" />
                   </Button>
                   <Button
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push('/map')}
                     variant="outline"
                     className="border-2 border-sky-400 text-sky-400 hover:bg-blue-50 hover:text-sky-500 font-semibold py-6 px-8 rounded-full transition-all duration-300 ease-in-out hover:shadow-lg"
                   >

@@ -89,3 +89,20 @@ export const deleteMarker = async (id: Marker['id']) => {
     console.error('マーカーの削除に失敗しました:', error);
   }
 };
+
+type SearchMarker = Marker & { _count: { posts: number } };
+
+export const searchMarkers = async () => {
+  try {
+    const res = await fetch('/api/search');
+    if (!res.ok) {
+      throw new Error(`Failed to fetch markers: ${res.status}`);
+    }
+
+    const data: SearchMarker[] = await res.json();
+    return data;
+  } catch (error) {
+    console.error('Error in fetchMarkers:', error);
+    throw error;
+  }
+};

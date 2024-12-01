@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MessageCircle, Pencil, Tag, Trash2 } from 'lucide-react';
+import { Mail, Pencil, Tag, Trash2 } from 'lucide-react';
 import AuthButton from './AuthButton';
 import FavoriteButton from './FavoriteButton';
 
@@ -80,7 +80,7 @@ export default function MarkerDetails({ markerId }: { markerId: number }) {
             <Badge variant="secondary">{marker.category}</Badge>
           </div>
           <div className="flex items-start space-x-2">
-            <MessageCircle className="h-5 w-5 text-muted-foreground mt-1" />
+            <Mail className="h-5 w-5 text-muted-foreground mt-1" />
             <div>
               <span className="font-medium">メッセージ:</span>
               <p className="text-muted-foreground">{marker.message}</p>
