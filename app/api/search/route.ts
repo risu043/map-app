@@ -3,20 +3,25 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
-    const searchParams = req.nextUrl.searchParams;
+    const { searchParams } = new URL(req.url);
+
+    const page = Number(searchParams.get('page') || '1');
     const filter = searchParams.get('filter') || '';
     const category = searchParams.get('category') || '';
-    const page = searchParams.get('page')
-      ? Number(searchParams.get('page'))
-      : 1;
+
+    const whereClause = {
+      title: {
+        contains: filter,
+      },
+      ...(category && { category: category }),
+    };
+
+    const hitCount = await prisma.marker.count({
+      where: whereClause,
+    });
 
     const markers = await prisma.marker.findMany({
-      where: {
-        title: {
-          contains: filter,
-        },
-        ...(category && { category: category }),
-      },
+      where: whereClause,
       include: {
         _count: {
           select: { posts: true },
@@ -25,7 +30,11 @@ export async function GET(req: NextRequest) {
       take: 3,
       skip: (page - 1) * 3,
     });
-    return NextResponse.json(markers);
+
+    return NextResponse.json({
+      markers,
+      hitCount,
+    });
   } catch (error) {
     console.error('Request error', error);
     return NextResponse.json(

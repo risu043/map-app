@@ -45,17 +45,43 @@ export async function PUT(
   }
 }
 
+// export async function DELETE(
+//   req: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   try {
+//     const id = parseInt(params.id, 10);
+
+//     await prisma.marker.delete({
+//       where: { id },
+//     });
+
+//     return NextResponse.json({ message: 'Marker deleted successfully' });
+//   } catch (error) {
+//     console.error('Error deleting Marker:', error);
+//     return NextResponse.json(
+//       { error: 'Failed to delete Marker' },
+//       { status: 500 }
+//     );
+//   }
+// }
+
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const id = parseInt(params.id, 10);
+    if (isNaN(id)) {
+      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    }
 
-    await prisma.marker.delete({
-      where: { id },
-    });
+    const marker = await prisma.marker.findUnique({ where: { id } });
+    if (!marker) {
+      return NextResponse.json({ error: 'Marker not found' }, { status: 404 });
+    }
 
+    await prisma.marker.delete({ where: { id } });
     return NextResponse.json({ message: 'Marker deleted successfully' });
   } catch (error) {
     console.error('Error deleting Marker:', error);

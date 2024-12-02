@@ -1,38 +1,62 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import { searchMarkers } from '../marker';
 import { Marker } from '@prisma/client';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MessageCircle, Tag } from 'lucide-react';
+import Pagination from './Pagination';
+import { useSearchParams } from 'next/navigation';
 
 export default function MarkerLists() {
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-    undefined
-  );
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  type SearchMarker = Marker & { _count: { posts: number } };
+  const filter = searchParams.get('filter') || '';
+  const category = searchParams.get('category') || '';
+  const page = Number(searchParams.get('page') || '1');
+  type SearchResponse = {
+    markers: (Marker & {
+      _count: {
+        posts: number;
+      };
+    })[];
+    hitCount: number;
+  };
 
-  const {
-    data: markers,
-    isLoading,
-    isError,
-    error,
-  } = useQuery<SearchMarker[], Error>({
-    queryKey: ['searchMarkers'],
-    queryFn: searchMarkers,
+  const { data, isLoading, isError, error } = useQuery<SearchResponse, Error>({
+    queryKey: ['searchMarkers', { page, filter, category }],
+    queryFn: () => searchMarkers({ page, filter, category }),
   });
+
+  const [query, setQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setQuery(e.target.value);
+  };
+
+  const handleCategoryChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ): void => {
+    setSelectedCategory(e.target.value);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const params = new URLSearchParams();
+    if (query) params.set('filter', query);
+    if (selectedCategory) params.set('category', selectedCategory);
+    params.set('page', '1');
+
+    router.push(`?${params.toString()}`);
+  };
 
   if (isLoading) {
     return (
@@ -60,41 +84,31 @@ export default function MarkerLists() {
     );
   }
 
-  if (!markers) {
+  if (!data) {
     return (
       <div className="text-center text-muted-foreground">No markers found</div>
     );
   }
 
-  const categories = ['観光', '食事', 'こども'];
-  const filteredMarkers =
-    selectedCategory === undefined
-      ? markers
-      : markers.filter((marker) => marker.category === selectedCategory);
-
   return (
     <div className="space-y-8">
-      <div className="flex items-center space-x-2">
-        <Tag className="h-5 w-5" />
-        <Select
-          value={selectedCategory ?? undefined}
-          onValueChange={setSelectedCategory}
-        >
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Select a category" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
+      <form onSubmit={handleFormSubmit}>
+        <input
+          type="text"
+          onChange={handleInputChange}
+          value={query}
+          placeholder="search..."
+        />
+        <select onChange={handleCategoryChange} value={selectedCategory}>
+          <option value="">select category</option>
+          <option value="観光">観光</option>
+          <option value="食事">食事</option>
+          <option value="家族">家族</option>
+        </select>
+        <input type="submit" value="submit" />
+      </form>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredMarkers.map((marker) => (
+        {data.markers.map((marker) => (
           <Link
             href={`/lists/${marker.id}`}
             key={marker.id}
@@ -130,6 +144,12 @@ export default function MarkerLists() {
           </Link>
         ))}
       </div>
+      <Pagination
+        page={page}
+        filter={filter}
+        category={category}
+        hitCount={data.hitCount}
+      />
     </div>
   );
 }

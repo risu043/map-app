@@ -90,16 +90,33 @@ export const deleteMarker = async (id: Marker['id']) => {
   }
 };
 
-type SearchMarker = Marker & { _count: { posts: number } };
+type SearchResponse = {
+  markers: (Marker & {
+    _count: {
+      posts: number;
+    };
+  })[];
+  hitCount: number;
+};
 
-export const searchMarkers = async () => {
+export const searchMarkers = async ({
+  page,
+  filter,
+  category,
+}: {
+  page: number;
+  filter: string;
+  category: string;
+}) => {
   try {
-    const res = await fetch('/api/search');
+    const res = await fetch(
+      `/api/search?page=${page}&filter=${filter}&category=${category}`
+    );
     if (!res.ok) {
       throw new Error(`Failed to fetch markers: ${res.status}`);
     }
 
-    const data: SearchMarker[] = await res.json();
+    const data: SearchResponse = await res.json();
     return data;
   } catch (error) {
     console.error('Error in fetchMarkers:', error);
