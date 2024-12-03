@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -63,25 +63,11 @@ export default function MarkerLists() {
     if (selectedCategory === 'all') params.delete('category');
     params.set('page', '1');
 
-    router.push(`?${params.toString()}`);
+    router.push(`?${params}`);
   };
 
   if (isLoading) {
-    return (
-      <div className="space-y-8">
-        <Skeleton className="h-10 w-[200px]" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, index) => (
-            <Card key={index} className="overflow-hidden">
-              <Skeleton className="h-[250px] w-full" />
-              <CardContent className="mt-4">
-                <Skeleton className="h-4 w-3/4" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
+    return <SkeletonLoader />;
   }
 
   if (isError) {
@@ -99,79 +85,99 @@ export default function MarkerLists() {
   }
 
   return (
-    <div className="space-y-8">
-      <form onSubmit={handleFormSubmit} className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-grow">
-            <Input
-              type="text"
-              onChange={handleInputChange}
-              value={query}
-              placeholder="Search..."
-              className="pl-10"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+    <Suspense fallback={<SkeletonLoader />}>
+      <div className="space-y-8">
+        <form onSubmit={handleFormSubmit} className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-grow">
+              <Input
+                type="text"
+                onChange={handleInputChange}
+                value={query}
+                placeholder="Search..."
+                className="pl-10"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            </div>
+            <Select
+              onValueChange={handleCategoryChange}
+              value={selectedCategory}
+            >
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">select category</SelectItem>
+                <SelectItem value="観光">観光</SelectItem>
+                <SelectItem value="食事">食事</SelectItem>
+                <SelectItem value="家族">家族</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button type="submit">
+              <Search className="h-4 w-4 mr-2" />
+              検索
+            </Button>
           </div>
-          <Select onValueChange={handleCategoryChange} value={selectedCategory}>
-            <SelectTrigger className="w-full sm:w-[200px]">
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">select category</SelectItem>
-              <SelectItem value="観光">観光</SelectItem>
-              <SelectItem value="食事">食事</SelectItem>
-              <SelectItem value="家族">家族</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button type="submit">
-            <Search className="h-4 w-4 mr-2" />
-            検索
-          </Button>
-        </div>
-      </form>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data.markers.map((marker) => (
-          <Link
-            href={`/lists/${marker.id}`}
-            key={marker.id}
-            className="no-underline"
-          >
-            <Card className="overflow-hidden transition-shadow hover:shadow-lg">
-              <div className="h-[250px] relative">
-                <Image
-                  src={marker.image}
-                  alt={marker.title}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  fill
-                  priority
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="font-semibold text-lg mb-2 line-clamp-1">
-                  {marker.title}
-                </h3>
-                <div className="flex items-center space-x-6 text-muted-foreground">
-                  <div className="flex items-center space-x-2 text-muted-foreground">
-                    <Tag className="h-4 w-4" />
-                    <span className="text-sm">{marker.category}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-muted-foreground">
-                    <MessageCircle className="h-4 w-4" />
-                    <span className="text-sm">{marker._count.posts}</span>
-                  </div>
+        </form>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.markers.map((marker) => (
+            <Link
+              href={`/lists/${marker.id}`}
+              key={marker.id}
+              className="no-underline"
+            >
+              <Card className="overflow-hidden transition-shadow hover:shadow-lg">
+                <div className="h-[250px] relative">
+                  <Image
+                    src={marker.image}
+                    alt={marker.title}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    fill
+                    priority
+                    className="object-cover"
+                  />
                 </div>
-              </CardContent>
-            </Card>
-          </Link>
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-lg mb-2 line-clamp-1">
+                    {marker.title}
+                  </h3>
+                  <div className="flex items-center space-x-6 text-muted-foreground">
+                    <div className="flex items-center space-x-2 text-muted-foreground">
+                      <Tag className="h-4 w-4" />
+                      <span className="text-sm">{marker.category}</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-muted-foreground">
+                      <MessageCircle className="h-4 w-4" />
+                      <span className="text-sm">{marker._count.posts}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+        <Pagination
+          page={page}
+          filter={filter}
+          category={category}
+          hitCount={data.hitCount}
+        />
+      </div>
+    </Suspense>
+  );
+}
+
+function SkeletonLoader() {
+  return (
+    <div className="space-y-8">
+      <Skeleton className="h-10 w-[200px]" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[...Array(6)].map((_, index) => (
+          <Card key={index}>
+            <Skeleton className="h-[250px] w-full" />
+          </Card>
         ))}
       </div>
-      <Pagination
-        page={page}
-        filter={filter}
-        category={category}
-        hitCount={data.hitCount}
-      />
     </div>
   );
 }
