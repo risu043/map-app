@@ -1,61 +1,49 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type PaginationProps = {
-  page: number;
-  filter: string;
-  category: string;
   hitCount: number;
 };
 
-export default function Pagination({
-  page,
-  filter,
-  category,
-  hitCount,
-}: PaginationProps): JSX.Element {
+export default function Pagination({ hitCount }: PaginationProps): JSX.Element {
   const router = useRouter();
   const pageVolume = 3;
-  const isLast = hitCount <= page * pageVolume;
+
   const totalPages = Math.ceil(hitCount / pageVolume);
 
-  const createHref = (newPage: number) => {
-    const params = new URLSearchParams();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const isLast = hitCount <= currentPage * pageVolume;
 
-    params.set('page', String(newPage));
-
-    if (filter) {
-      params.set('filter', filter);
-    }
-
-    if (category) {
-      params.set('category', category);
-    }
-
-    return `?${params.toString()}`;
+  const createPageURL = (pageNumber: number | string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
   };
 
   const handlePrevPageClick = (): void => {
-    router.push(createHref(page - 1));
+    router.push(createPageURL(currentPage - 1));
   };
 
   const handleNextPageClick = (): void => {
-    router.push(createHref(page + 1));
+    router.push(createPageURL(currentPage + 1));
   };
 
   const handleButtonPageClick = (index: number) => {
-    router.push(createHref(index + 1));
+    router.push(createPageURL(index + 1));
   };
 
   return (
     <div className="flex space-x-4">
       <button
         onClick={handlePrevPageClick}
-        disabled={page === 1}
+        disabled={currentPage === 1}
         className={
-          page === 1 ? 'text-gray-300' : 'hover:text-gray-400 transition'
+          currentPage === 1 ? 'text-gray-300' : 'hover:text-gray-400 transition'
         }
       >
         <ChevronLeft className="h-4 w-4" />
@@ -64,7 +52,7 @@ export default function Pagination({
       <ul className="flex space-x-4">
         {Array.from({ length: totalPages }, (_, index) => (
           <li key={index}>
-            {page === index + 1 ? (
+            {currentPage === index + 1 ? (
               <span className="block grid place-items-center w-8 h-8 rounded-full bg-blue-500 text-white">
                 {index + 1}
               </span>
