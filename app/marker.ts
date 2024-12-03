@@ -108,31 +108,6 @@ type SearchResponse = {
   hitCount: number;
 };
 
-// export const searchMarkers = async ({
-//   page,
-//   filter,
-//   category,
-// }: {
-//   page: number;
-//   filter: string;
-//   category: string;
-// }) => {
-//   try {
-//     const res = await fetch(
-//       `/api/search?page=${page}&filter=${filter}&category=${category}`
-//     );
-//     if (!res.ok) {
-//       throw new Error(`Failed to fetch markers: ${res.status}`);
-//     }
-
-//     const data: SearchResponse = await res.json();
-//     return data;
-//   } catch (error) {
-//     console.error('Error in fetchMarkers:', error);
-//     throw error;
-//   }
-// };
-
 export const searchMarkers = async ({
   page,
   filter,
@@ -143,14 +118,9 @@ export const searchMarkers = async ({
   category: string;
 }) => {
   try {
-    const res = await fetch('/api/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ page, filter, category }),
-    });
-
+    const res = await fetch(
+      `/api/search?page=${page}&filter=${filter}&category=${category}`
+    );
     if (!res.ok) {
       throw new Error(`Failed to fetch markers: ${res.status}`);
     }
@@ -158,7 +128,7 @@ export const searchMarkers = async ({
     const data: SearchResponse = await res.json();
     return data;
   } catch (error) {
-    console.error('Error in searchMarkers:', error);
+    console.error('Error in fetchMarkers:', error);
     throw error;
   }
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
@@ -11,7 +11,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MessageCircle, Tag, Search } from 'lucide-react';
 import Pagination from './Pagination';
-import { useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +23,8 @@ import {
 
 export default function MarkerLists() {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
   const filter = searchParams.get('filter') || '';
   const category = searchParams.get('category') || '';
@@ -57,13 +57,23 @@ export default function MarkerLists() {
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const params = new URLSearchParams();
-    if (query) params.set('filter', query);
-    if (selectedCategory !== 'all') params.set('category', selectedCategory);
-    if (selectedCategory === 'all') params.delete('category');
+    const params = new URLSearchParams(searchParams);
+
+    if (query) {
+      params.set('filter', query);
+    } else {
+      params.delete('filter');
+    }
+
+    if (selectedCategory !== 'all') {
+      params.set('category', selectedCategory);
+    } else {
+      params.delete('category');
+    }
+
     params.set('page', '1');
 
-    router.push(`?${params}`);
+    replace(`${pathname}?${params.toString()}`);
   };
 
   if (isLoading) {
