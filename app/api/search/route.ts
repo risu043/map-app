@@ -1,6 +1,8 @@
 import prisma from '../../lib/db';
 import { type NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const page = Number(req.nextUrl.searchParams.get('page') || '1');
