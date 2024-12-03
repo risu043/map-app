@@ -9,9 +9,18 @@ import { searchMarkers } from '../marker';
 import { Marker } from '@prisma/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MessageCircle, Tag } from 'lucide-react';
+import { MessageCircle, Tag, Search } from 'lucide-react';
 import Pagination from './Pagination';
 import { useSearchParams } from 'next/navigation';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function MarkerLists() {
   const searchParams = useSearchParams();
@@ -35,16 +44,14 @@ export default function MarkerLists() {
   });
 
   const [query, setQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setQuery(e.target.value);
   };
 
-  const handleCategoryChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ): void => {
-    setSelectedCategory(e.target.value);
+  const handleCategoryChange = (value: string): void => {
+    setSelectedCategory(value);
   };
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -52,7 +59,8 @@ export default function MarkerLists() {
 
     const params = new URLSearchParams();
     if (query) params.set('filter', query);
-    if (selectedCategory) params.set('category', selectedCategory);
+    if (selectedCategory !== 'all') params.set('category', selectedCategory);
+    if (selectedCategory === 'all') params.delete('category');
     params.set('page', '1');
 
     router.push(`?${params.toString()}`);
@@ -92,20 +100,34 @@ export default function MarkerLists() {
 
   return (
     <div className="space-y-8">
-      <form onSubmit={handleFormSubmit}>
-        <input
-          type="text"
-          onChange={handleInputChange}
-          value={query}
-          placeholder="search..."
-        />
-        <select onChange={handleCategoryChange} value={selectedCategory}>
-          <option value="">select category</option>
-          <option value="観光">観光</option>
-          <option value="食事">食事</option>
-          <option value="家族">家族</option>
-        </select>
-        <input type="submit" value="submit" />
+      <form onSubmit={handleFormSubmit} className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-grow">
+            <Input
+              type="text"
+              onChange={handleInputChange}
+              value={query}
+              placeholder="Search..."
+              className="pl-10"
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          </div>
+          <Select onValueChange={handleCategoryChange} value={selectedCategory}>
+            <SelectTrigger className="w-full sm:w-[200px]">
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">select category</SelectItem>
+              <SelectItem value="観光">観光</SelectItem>
+              <SelectItem value="食事">食事</SelectItem>
+              <SelectItem value="家族">家族</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button type="submit">
+            <Search className="h-4 w-4 mr-2" />
+            検索
+          </Button>
+        </div>
       </form>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data.markers.map((marker) => (

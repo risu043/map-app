@@ -109,7 +109,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="py-16 px-4 bg-blue-100">
+        <section className="py-16 px-4 bg-gray-100">
           <div className="container mx-auto max-w-4xl">
             <motion.h2
               className="text-center text-3xl font-bold mb-12 text-blue-600"

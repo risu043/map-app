@@ -1,4 +1,5 @@
 import { Marker } from '@prisma/client';
+import supabase from './lib/supabase';
 
 export const fetchMarkers = async () => {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
@@ -79,14 +80,22 @@ export const editMarker = async ({
   }
 };
 
-export const deleteMarker = async (id: Marker['id']) => {
-  try {
-    const res = await fetch(`/api/markers/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-      return res.json();
-    }
-  } catch (error) {
-    console.error('マーカーの削除に失敗しました:', error);
+// export const deleteMarker = async (id: Marker['id']) => {
+//   try {
+//     const res = await fetch(`/api/markers/${id}`, { method: 'DELETE' });
+//     if (res.ok) {
+//       return res.json();
+//     }
+//   } catch (error) {
+//     console.error('マーカーの削除に失敗しました:', error);
+//   }
+// };
+
+export const deleteMarker = async (id: number): Promise<void> => {
+  const { error } = await supabase.from('markers').delete().eq('id', id);
+
+  if (error) {
+    throw error;
   }
 };
 
@@ -99,6 +108,31 @@ type SearchResponse = {
   hitCount: number;
 };
 
+// export const searchMarkers = async ({
+//   page,
+//   filter,
+//   category,
+// }: {
+//   page: number;
+//   filter: string;
+//   category: string;
+// }) => {
+//   try {
+//     const res = await fetch(
+//       `/api/search?page=${page}&filter=${filter}&category=${category}`
+//     );
+//     if (!res.ok) {
+//       throw new Error(`Failed to fetch markers: ${res.status}`);
+//     }
+
+//     const data: SearchResponse = await res.json();
+//     return data;
+//   } catch (error) {
+//     console.error('Error in fetchMarkers:', error);
+//     throw error;
+//   }
+// };
+
 export const searchMarkers = async ({
   page,
   filter,
@@ -109,9 +143,14 @@ export const searchMarkers = async ({
   category: string;
 }) => {
   try {
-    const res = await fetch(
-      `/api/search?page=${page}&filter=${filter}&category=${category}`
-    );
+    const res = await fetch('/api/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ page, filter, category }),
+    });
+
     if (!res.ok) {
       throw new Error(`Failed to fetch markers: ${res.status}`);
     }
@@ -119,7 +158,7 @@ export const searchMarkers = async ({
     const data: SearchResponse = await res.json();
     return data;
   } catch (error) {
-    console.error('Error in fetchMarkers:', error);
+    console.error('Error in searchMarkers:', error);
     throw error;
   }
 };

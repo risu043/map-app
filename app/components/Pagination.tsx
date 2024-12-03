@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type PaginationProps = {
   page: number;
@@ -45,27 +45,46 @@ export default function Pagination({
     router.push(createHref(page + 1));
   };
 
+  const handleButtonPageClick = (index: number) => {
+    router.push(createHref(index + 1));
+  };
+
   return (
-    <div className="flex space-x-2">
-      <button onClick={handlePrevPageClick} disabled={page === 1}>
-        Prev
+    <div className="flex space-x-4">
+      <button
+        onClick={handlePrevPageClick}
+        disabled={page === 1}
+        className={
+          page === 1 ? 'text-gray-300' : 'hover:text-gray-400 transition'
+        }
+      >
+        <ChevronLeft className="h-4 w-4" />
       </button>
 
-      <ul className="flex space-x-2">
+      <ul className="flex space-x-4">
         {Array.from({ length: totalPages }, (_, index) => (
           <li key={index}>
             {page === index + 1 ? (
-              <span>{index + 1}</span>
+              <span className="block grid place-items-center w-8 h-8 rounded-full bg-blue-500 text-white">
+                {index + 1}
+              </span>
             ) : (
-              <button>
-                <Link href={createHref(index + 1)}>{index + 1}</Link>
+              <button
+                onClick={() => handleButtonPageClick(index)}
+                className="w-8 h-8 border rounded-full hover:bg-indigo-50 transition"
+              >
+                {index + 1}
               </button>
             )}
           </li>
         ))}
       </ul>
-      <button onClick={handleNextPageClick} disabled={isLast}>
-        Next
+      <button
+        onClick={handleNextPageClick}
+        disabled={isLast}
+        className={isLast ? 'text-gray-300' : 'hover:text-gray-400 transition'}
+      >
+        <ChevronRight className="h-4 w-4" />
       </button>
     </div>
   );
