@@ -25,7 +25,7 @@ export default function UserProfileEdit() {
       <CardContent>
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {[...Array(8)].map((_, index) => (
+            {[...Array(4)].map((_, index) => (
               <Skeleton
                 key={index}
                 className="w-full aspect-square rounded-lg"

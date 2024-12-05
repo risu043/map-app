@@ -17,18 +17,18 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Map App',
-  description: 'An interactive map application built with Next.js',
+  title: 'ふくふくマップ',
+  description: '下関のおでかけスポットを探せるアプリです。',
   openGraph: {
-    title: 'Map App',
-    description: 'An interactive map application built with Next.js',
+    title: 'ふくふくマップ',
+    description: '下関のおでかけスポットを探せるアプリです。',
     url: process.env.NEXT_PUBLIC_APP_URL,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_APP_URL}/images/ogp.jpg`,
         width: 1200,
         height: 630,
-        alt: 'OGP Image for Map App',
+        alt: 'OGP Image for ふくふくマップ',
       },
     ],
   },

@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import supabase from '../lib/supabase';
+import { ProfileSkeleton } from './profile-skelton';
 
 export default function UserProfileEdit() {
   const [name, setName] = useState('');
@@ -40,7 +41,7 @@ export default function UserProfileEdit() {
   }, [router]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <ProfileSkeleton />;
   }
 
   return (

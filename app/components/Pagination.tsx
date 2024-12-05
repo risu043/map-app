@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import RippleButton from '@/components/ui/ripple-button';
 
 type PaginationProps = {
   hitCount: number;
@@ -57,12 +58,13 @@ export default function Pagination({ hitCount }: PaginationProps): JSX.Element {
                 {index + 1}
               </span>
             ) : (
-              <button
+              <RippleButton
+                rippleColor="#ADD8E6"
                 onClick={() => handleButtonPageClick(index)}
-                className="w-8 h-8 border rounded-full hover:bg-indigo-50 transition"
+                className="w-8 h-8 border rounded-full"
               >
                 {index + 1}
-              </button>
+              </RippleButton>
             )}
           </li>
         ))}
