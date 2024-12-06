@@ -80,6 +80,9 @@ export default function Form() {
           await queryClient.invalidateQueries({
             queryKey: ['fetchMarkers'],
           });
+          await queryClient.invalidateQueries({
+            queryKey: ['searchMarkers'],
+          });
           alert('施設が正常に登録されました。');
           router.push('/lists');
         }

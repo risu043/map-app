@@ -126,6 +126,12 @@ export default function EditForm({ markerId }: { markerId: number }) {
       queryClient.invalidateQueries({
         queryKey: ['fetchMarkers'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['searchMarkers'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['marker'],
+      });
       alert('施設を編集しました');
       router.push('/lists');
     },

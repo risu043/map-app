@@ -15,6 +15,9 @@ export default function DeleteButton({ id }: { id: number }) {
       queryClient.invalidateQueries({
         queryKey: ['fetchMarkers'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['searchMarkers'],
+      });
       alert('施設をリストから削除しました');
       router.push('/lists');
     },
