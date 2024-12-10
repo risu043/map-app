@@ -17,7 +17,10 @@ export default async function StaticPage(props: {
   return (
     <div className="container max-w-6xl mx-auto py-8 px-4">
       <Search />
-      <Suspense key={filter + currentPage} fallback={<div>loading...</div>}>
+      <Suspense
+        key={filter + category + currentPage}
+        fallback={<div>loading...</div>}
+      >
         <MarkerLists filter={filter} category={category} page={currentPage} />
       </Suspense>
     </div>

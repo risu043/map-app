@@ -27,8 +27,8 @@ export async function GET(req: NextRequest) {
           select: { posts: true },
         },
       },
-      take: 3,
-      skip: (page - 1) * 3,
+      take: 6,
+      skip: (page - 1) * 6,
     });
 
     return NextResponse.json({

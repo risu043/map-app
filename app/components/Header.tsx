@@ -61,64 +61,66 @@ export default function Header() {
           <Provider>
             <Auth />
           </Provider>
-          <Sheet>
-            <SheetTrigger asChild className="w-12 p-0">
-              <Button variant="outline">
-                <Menu />
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
-                <SheetDescription>
-                  ふくふくマップは下関のおでかけスポットを探せるアプリです。
-                </SheetDescription>
-              </SheetHeader>
-              <div className="grid gap-4 py-4">
-                <SheetClose asChild>
-                  <Link
-                    href="/"
-                    className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
-                  >
-                    Top
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link
-                    href="/map"
-                    className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
-                  >
-                    Map
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link
-                    href="/lists"
-                    className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
-                  >
-                    Lists
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link
-                    href="/form"
-                    className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
-                  >
-                    Form
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link
-                    href="/profile"
-                    className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
-                  >
-                    Profile
-                  </Link>
-                </SheetClose>
-              </div>
-              <SheetFooter></SheetFooter>
-            </SheetContent>
-          </Sheet>
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild className="w-12 p-0">
+                <Button variant="outline">
+                  <Menu />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Menu</SheetTitle>
+                  <SheetDescription>
+                    ふくふくマップは下関のおでかけスポットを探せるアプリです。
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="grid gap-4 py-4">
+                  <SheetClose asChild>
+                    <Link
+                      href="/"
+                      className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      Top
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link
+                      href="/map"
+                      className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      Map
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link
+                      href="/lists"
+                      className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      Lists
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link
+                      href="/form"
+                      className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      Form
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link
+                      href="/profile"
+                      className="text-xl md:text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      Profile
+                    </Link>
+                  </SheetClose>
+                </div>
+                <SheetFooter></SheetFooter>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>

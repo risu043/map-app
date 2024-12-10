@@ -10,8 +10,8 @@ type PaginationProps = {
 };
 
 export default function Pagination({ hitCount }: PaginationProps): JSX.Element {
-  const router = useRouter();
-  const pageVolume = 3;
+  const { replace } = useRouter();
+  const pageVolume = 6;
 
   const totalPages = Math.ceil(hitCount / pageVolume);
 
@@ -27,15 +27,15 @@ export default function Pagination({ hitCount }: PaginationProps): JSX.Element {
   };
 
   const handlePrevPageClick = (): void => {
-    router.push(createPageURL(currentPage - 1));
+    replace(createPageURL(currentPage - 1));
   };
 
   const handleNextPageClick = (): void => {
-    router.push(createPageURL(currentPage + 1));
+    replace(createPageURL(currentPage + 1));
   };
 
   const handleButtonPageClick = (index: number) => {
-    router.push(createPageURL(index + 1));
+    replace(createPageURL(index + 1));
   };
 
   return (
