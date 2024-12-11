@@ -14,6 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { mplus } from '@/app/ui/font';
 
 const NavLinks: React.FC = () => (
   <>
@@ -51,7 +52,9 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-1">
             <MapPin className="h-8 w-8 text-primary" />
-            <h1 className="text-xl md:text-2xl font-bold">ふくふくマップ</h1>
+            <h1 className={`${mplus.className} text-xl md:text-2xl font-bold`}>
+              ふくふくマップ
+            </h1>
           </Link>
           <nav className="hidden md:flex items-center space-x-4">
             <NavLinks />

@@ -1,20 +1,9 @@
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
 import Provider from './components/Provider';
 import Header from './components/Header';
 import './globals.css';
 import Link from 'next/link';
-
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
-});
+import { inter } from '@/app/ui/font';
 
 export const metadata: Metadata = {
   title: 'ふくふくマップ',
@@ -41,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-50`}
+        className={`${inter.className} antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-50`}
       >
         <div id="page">
           <Header />
