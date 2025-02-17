@@ -42,7 +42,7 @@
 
 ## ER 図
 
-<img src="https://github.com/risu043/map-app/blob/main/public/images/readme3.png" width="600" alt="readme3">
+<img src="https://github.com/risu043/map-app/blob/main/public/images/er.png" width="600" alt="readme3">
 
 ## 画面遷移図
 
